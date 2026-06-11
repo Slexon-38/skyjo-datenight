@@ -2,424 +2,833 @@
 <html lang="de" data-theme="dark">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Skyjo Date Night</title>
 <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&f[]=zodiak@400,700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 <style>
 :root,[data-theme="light"]{
-  --bg:#f7f6f2;--surface:#fbfbf9;--surface-2:#f2efe9;--line:#d7d1c7;
-  --text:#25221d;--muted:#6f6a63;--primary:#01696f;--primary-2:#0e4e53;
-  --accent:#d19900;--danger:#b43a4d;--good:#437a22;
-  --shadow:0 20px 50px rgba(26,24,20,.10);
-  --font-body:'Satoshi',system-ui,sans-serif;
-  --font-display:'Zodiak',Georgia,serif;
+  --bg:#f7f6f2;--surface:#fbfbf9;--s2:#f2efe9;--s3:#e9e4db;
+  --line:#d4cfc8;--text:#25221d;--muted:#6f6a63;--faint:#b0a99e;
+  --primary:#01696f;--p2:#0e4e53;--accent:#d19900;--a2:#a67800;
+  --danger:#b43a4d;--good:#437a22;
+  --r:22px;--rs:14px;--sh:0 20px 50px rgba(26,24,20,.10);
+  --fb:'Satoshi',system-ui,sans-serif;--fd:'Zodiak',Georgia,serif;
 }
 [data-theme="dark"]{
-  --bg:#171614;--surface:#201f1d;--surface-2:#2a2926;--line:#3a3834;
-  --text:#ece8df;--muted:#aaa39a;--primary:#4f98a3;--primary-2:#2a6e77;
-  --accent:#e8af34;--danger:#dd6974;--good:#76b55a;
-  --shadow:0 24px 70px rgba(0,0,0,.35);
+  --bg:#171614;--surface:#201f1d;--s2:#2a2926;--s3:#343330;
+  --line:#3a3834;--text:#ece8df;--muted:#aaa39a;--faint:#6a6560;
+  --primary:#4f98a3;--p2:#2a6e77;--accent:#e8af34;--a2:#c99020;
+  --danger:#dd6974;--good:#76b55a;
+  --sh:0 24px 70px rgba(0,0,0,.38);
 }
 *{box-sizing:border-box;}
 html,body{margin:0;min-height:100%;}
-body{font-family:var(--font-body);background:radial-gradient(circle at top left,rgba(79,152,163,.14),transparent 30%),radial-gradient(circle at bottom right,rgba(209,153,0,.12),transparent 28%),var(--bg);color:var(--text);}
+body{
+  font-family:var(--fb);
+  background:radial-gradient(circle at top left,rgba(79,152,163,.14),transparent 30%),
+             radial-gradient(circle at bottom right,rgba(209,153,0,.11),transparent 28%),
+             var(--bg);
+  color:var(--text);
+}
 button,input{font:inherit;}
-button{cursor:pointer;border:0;transition:.18s ease;}
-button:hover{transform:translateY(-1px);}
-button:disabled{opacity:.45;cursor:not-allowed;transform:none;}
-.app{max-width:1300px;margin:0 auto;padding:20px;display:grid;gap:18px;}
-.topbar,.panel{background:color-mix(in srgb,var(--surface) 88%,transparent);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);backdrop-filter:blur(18px);}
-.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 20px;flex-wrap:wrap;}
+button{cursor:pointer;border:0;transition:.15s ease;}
+button:hover:not(:disabled){transform:translateY(-1px);}
+button:disabled{opacity:.42;cursor:not-allowed;transform:none;}
+.app{max-width:1340px;margin:0 auto;padding:18px;display:grid;gap:16px;}
+.topbar,.panel{
+  background:color-mix(in srgb,var(--surface) 90%,transparent);
+  border:1px solid var(--line);border-radius:var(--r);
+  box-shadow:var(--sh);backdrop-filter:blur(18px);
+}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:16px 20px;flex-wrap:wrap;}
 .brand{display:flex;align-items:center;gap:14px;}
-.logo{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(160deg,var(--primary),var(--primary-2));color:#fff;flex:none;}
-.brand h1{margin:0;font-family:var(--font-display);font-size:clamp(1.5rem,3vw,2.4rem);line-height:1;letter-spacing:-.02em;}
-.brand p{margin:4px 0 0;color:var(--muted);font-size:.95rem;}
-.theme-btn,.ghost,.primary,.danger,.soft{border-radius:999px;padding:11px 16px;min-height:44px;}
-.theme-btn,.ghost,.soft{background:var(--surface-2);color:var(--text);border:1px solid var(--line);}
-.primary{background:var(--primary);color:white;}
-.danger{background:var(--danger);color:white;}
-.layout{display:grid;grid-template-columns:340px 1fr;gap:18px;}
-.panel{padding:18px;}
-.panel h2,.panel h3{margin:0 0 12px;font-size:1rem;letter-spacing:.02em;}
-.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+.logo{
+  width:46px;height:46px;border-radius:14px;
+  display:grid;place-items:center;
+  background:linear-gradient(160deg,var(--primary),var(--p2));
+  color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.22);flex:none;
+}
+.brand h1{margin:0;font-family:var(--fd);font-size:clamp(1.4rem,3vw,2.2rem);line-height:1;letter-spacing:-.02em;}
+.brand p{margin:3px 0 0;color:var(--muted);font-size:.9rem;}
+.layout{display:grid;grid-template-columns:330px 1fr;gap:16px;}
+.panel{padding:16px;}
+.panel h2{margin:0 0 12px;font-size:.95rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);}
 .stack{display:grid;gap:10px;}
-.field{display:grid;gap:8px;}
-.field label{font-size:.92rem;color:var(--muted);}
-.field input{min-height:48px;border-radius:16px;border:1px solid var(--line);background:var(--surface-2);color:var(--text);padding:0 14px;outline:none;}
-.field input:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(79,152,163,.15);}
-.badge-row{display:flex;gap:10px;flex-wrap:wrap;}
-.badge{padding:8px 12px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line);color:var(--muted);font-size:.88rem;}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.field{display:grid;gap:6px;}
+.field label{font-size:.88rem;color:var(--muted);}
+.field input{
+  min-height:46px;border-radius:14px;border:1px solid var(--line);
+  background:var(--s2);color:var(--text);padding:0 14px;outline:none;
+  transition:.15s ease;
+}
+.field input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(79,152,163,.18);}
+.btn{border-radius:999px;padding:10px 16px;min-height:44px;font-weight:500;border:1px solid transparent;transition:.15s ease;}
+.btn:hover:not(:disabled){transform:translateY(-1px);}
+.primary{background:var(--primary);color:#fff;}
+.ghost{background:var(--s2);color:var(--text);border-color:var(--line);}
+.danger{background:var(--danger);color:#fff;}
+.accent-btn{background:var(--accent);color:#111;}
+.badge-row{display:flex;gap:8px;flex-wrap:wrap;}
+.badge{
+  padding:7px 11px;border-radius:999px;
+  background:var(--s2);border:1px solid var(--line);
+  color:var(--muted);font-size:.85rem;
+}
 .badge strong{color:var(--text);}
-.board{display:grid;gap:18px;}
-.player-section{padding:18px;border-radius:28px;background:color-mix(in srgb,var(--surface) 90%,transparent);border:1px solid var(--line);box-shadow:var(--shadow);}
-.player-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap;}
+.board{display:grid;gap:16px;}
+.player-section{
+  padding:16px;border-radius:28px;
+  background:color-mix(in srgb,var(--surface) 92%,transparent);
+  border:1px solid var(--line);box-shadow:var(--sh);
+}
+.player-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
 .player-name{display:flex;align-items:center;gap:10px;font-size:1.05rem;font-weight:700;}
-.dot{width:12px;height:12px;border-radius:999px;background:var(--muted);}
-.dot.active{background:var(--accent);}
+.dot{width:11px;height:11px;border-radius:999px;background:var(--faint);}
+.dot.active{background:var(--accent);box-shadow:0 0 0 4px rgba(232,175,52,.2);}
 .dot.self{background:var(--primary);}
-.player-stats{display:flex;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:.92rem;}
-.grid{display:flex;gap:10px;flex-wrap:wrap;}
-.col-group{display:flex;flex-direction:column;gap:10px;}
-.col-group.matched .card{box-shadow:0 0 0 3px var(--accent);}
-.card{width:clamp(60px,8vw,80px);aspect-ratio:7/10;border-radius:18px;border:1px solid var(--line);position:relative;display:grid;place-items:center;background:linear-gradient(160deg,var(--surface-2),var(--surface));color:var(--text);font-weight:700;font-size:clamp(1rem,2vw,1.5rem);user-select:none;transition:.15s ease;}
-.card.face-down{background:repeating-linear-gradient(135deg,rgba(79,152,163,.24) 0 10px,rgba(209,153,0,.18) 10px 20px),var(--surface-2);color:transparent;}
-.card.selectable{cursor:pointer;box-shadow:0 0 0 2.5px var(--primary);transform:translateY(-2px);}
-.card.selectable:hover{transform:translateY(-4px);}
-.card.gone{opacity:0;pointer-events:none;}
-.card .mini{position:absolute;top:8px;left:10px;font-size:.72rem;color:var(--muted);font-weight:500;}
-.card.neg{color:var(--good);}
-.card.hi{color:var(--danger);}
+.player-stats{display:flex;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:.9rem;}
+.player-stats strong{color:var(--text);}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(68px,1fr));gap:10px;}
+/* Cards */
+.card{
+  aspect-ratio:7/10;border-radius:18px;border:1px solid var(--line);
+  position:relative;overflow:hidden;display:grid;place-items:center;
+  background:linear-gradient(160deg,var(--s2),var(--surface));
+  color:var(--text);font-weight:700;font-size:clamp(.95rem,1.8vw,1.45rem);
+  user-select:none;cursor:default;transition:.15s ease;
+}
+.card.face-down{
+  background:
+    linear-gradient(150deg,rgba(255,255,255,.07),rgba(255,255,255,0)),
+    repeating-linear-gradient(135deg,
+      rgba(79,152,163,.24) 0 10px,
+      rgba(232,175,52,.17) 10px 20px),
+    var(--s2);
+  color:transparent;
+}
+.card.selectable{cursor:pointer;outline:2px solid var(--primary);outline-offset:2px;}
+.card.selectable:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.2);}
+.card .mini{position:absolute;top:7px;left:9px;font-size:.7rem;color:var(--muted);font-weight:500;}
+.card.negative{color:var(--good);}
+.card.high{color:var(--danger);}
 .card.pending-card{outline:2px solid var(--accent);outline-offset:2px;}
-.card.back::after{content:"Skyjo";color:rgba(255,255,255,.82);font-family:var(--font-display);font-size:.9rem;transform:rotate(-8deg);}
+.card.back::after{
+  content:"Skyjo";color:rgba(255,255,255,.8);
+  font-family:var(--fd);font-size:.85rem;letter-spacing:.04em;
+  transform:rotate(-10deg);pointer-events:none;
+}
+.card.removed{
+  background:repeating-linear-gradient(
+    45deg,transparent,transparent 4px,
+    rgba(255,255,255,.04) 4px,rgba(255,255,255,.04) 8px
+  );
+  border-style:dashed;opacity:.4;pointer-events:none;
+}
+/* Play area */
 .play-area{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;align-items:start;}
-.pile{min-height:180px;padding:16px;border-radius:24px;border:1px solid var(--line);background:var(--surface);display:grid;justify-items:center;gap:10px;text-align:center;}
-.pile h3{margin:0;font-size:.95rem;}
+.pile{
+  min-height:200px;padding:16px;border-radius:24px;
+  border:1px solid var(--line);background:var(--surface);
+  display:grid;justify-items:center;gap:10px;text-align:center;
+}
+.pile h3{margin:0;font-size:.9rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);}
 .pile p{margin:0;color:var(--muted);font-size:.88rem;}
-.action-row{display:flex;gap:10px;flex-wrap:wrap;}
-.status{padding:14px 16px;border-radius:18px;background:var(--surface-2);border:1px solid var(--line);color:var(--text);line-height:1.5;font-size:.95rem;}
-.log{max-height:200px;overflow:auto;display:grid;gap:6px;}
-.log-item{font-size:.88rem;color:var(--muted);padding-bottom:6px;border-bottom:1px dashed var(--line);}
-.small{font-size:.86rem;color:var(--muted);}
-.divider{height:1px;background:var(--line);margin:8px 0;}
+.status-box{
+  padding:14px 16px;border-radius:18px;
+  background:var(--s2);border:1px solid var(--line);
+  font-size:.95rem;line-height:1.55;
+}
+.log{max-height:200px;overflow:auto;display:grid;gap:6px;padding-right:6px;}
+.log-item{font-size:.87rem;color:var(--muted);padding-bottom:6px;border-bottom:1px dashed var(--line);}
+.divider{height:1px;background:var(--line);margin:6px 0;}
 .copy-wrap{display:flex;gap:8px;}
 .copy-wrap input{flex:1;}
-.rules-box{background:var(--surface-2);border:1px solid var(--line);border-radius:16px;padding:14px;font-size:.86rem;color:var(--muted);line-height:1.65;}
-.rules-box strong{color:var(--text);}
-/* Mode indicator */
-.mode-flip{background:var(--accent)!important;color:#000!important;}
-@media(max-width:980px){.layout{grid-template-columns:1fr;}.play-area{grid-template-columns:1fr;}}
-@media(max-width:640px){.app{padding:12px;}.card{border-radius:12px;}.topbar,.panel,.player-section{padding:12px;}}
+.footer-note{color:var(--muted);font-size:.88rem;line-height:1.5;}
+.footer-note strong{color:var(--text);}
+.score-table{width:100%;border-collapse:collapse;font-size:.9rem;}
+.score-table th{color:var(--muted);font-weight:500;padding:6px 10px;border-bottom:1px solid var(--line);text-align:left;}
+.score-table td{padding:7px 10px;border-bottom:1px dashed var(--line);}
+.score-table tr:last-child td{border:0;}
+.win-banner{
+  padding:20px;border-radius:20px;text-align:center;
+  background:linear-gradient(135deg,var(--primary),var(--p2));
+  color:#fff;font-family:var(--fd);font-size:1.4rem;font-weight:700;
+}
+.flip-mode-hint{
+  padding:10px 14px;border-radius:14px;background:color-mix(in srgb,var(--accent) 18%,var(--s2));
+  border:1px solid var(--accent);color:var(--text);font-size:.9rem;
+}
+@media(max-width:980px){
+  .layout{grid-template-columns:1fr;}
+  .play-area{grid-template-columns:1fr;}
+}
+@media(max-width:640px){
+  .app{padding:12px;}.grid{gap:7px;}.panel,.player-section{padding:12px;}.topbar{padding:12px;}
+  .card{border-radius:13px;font-size:.9rem;}
+}
 </style>
 </head>
 <body>
 <div class="app">
-  <header class="topbar">
-    <div class="brand">
-      <div class="logo" aria-hidden="true">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-          <rect x="4" y="5" width="10" height="14" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
-          <rect x="10" y="3" width="10" height="14" rx="2.5" stroke="currentColor" stroke-width="1.8" opacity=".82"/>
-        </svg>
-      </div>
-      <div>
-        <h1>Skyjo Date Night</h1>
-        <p>2-Spieler · Online oder lokal · Vollständige Regeln</p>
-      </div>
+<header class="topbar">
+  <div class="brand">
+    <div class="logo" aria-hidden="true">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+        <rect x="4" y="5" width="10" height="14" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+        <rect x="10" y="3" width="10" height="14" rx="2.5" stroke="currentColor" stroke-width="1.8" opacity=".8"/>
+      </svg>
     </div>
-    <button class="theme-btn" id="themeBtn">🌙/☀️</button>
-  </header>
+    <div>
+      <h1>Skyjo Date Night</h1>
+      <p>Online oder lokal — zu zweit, nach echten Regeln.</p>
+    </div>
+  </div>
+  <div class="row">
+    <button class="btn ghost" id="rulesBtn">📖 Regeln</button>
+    <button class="btn ghost" id="themeBtn" aria-label="Theme wechseln">🌙</button>
+  </div>
+</header>
 
-  <div class="layout">
-    <aside class="stack">
-      <section class="panel">
-        <h2>Verbindung</h2>
-        <div class="field"><label for="nameInput">Dein Name</label><input id="nameInput" maxlength="22" placeholder="z. B. Simeon"/></div>
-        <div class="row">
-          <button class="primary" id="hostBtn">Raum erstellen</button>
-          <button class="ghost" id="joinModeBtn">Beitreten</button>
-          <button class="soft" id="localBtn">Lokal</button>
-        </div>
-        <div class="stack" id="joinBox" style="display:none;">
-          <div class="field"><label for="roomInput">Raumcode</label><input id="roomInput" placeholder="Code eingeben"/></div>
-          <button class="primary" id="connectBtn">Verbinden</button>
-        </div>
-        <div class="divider"></div>
-        <div class="badge-row">
-          <div class="badge">Peer: <strong id="peerState">offline</strong></div>
-          <div class="badge">Rolle: <strong id="roleState">–</strong></div>
-          <div class="badge">Verb.: <strong id="connState">–</strong></div>
-        </div>
-        <div class="field" id="roomArea" style="display:none;margin-top:8px;">
-          <label>Raumcode teilen</label>
-          <div class="copy-wrap"><input id="roomCode" readonly/><button class="ghost" id="copyBtn">Kopieren</button></div>
-        </div>
+<!-- RULES MODAL -->
+<div id="rulesModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;overflow:auto;padding:20px;">
+  <div style="max-width:680px;margin:40px auto;background:var(--surface);border-radius:24px;border:1px solid var(--line);padding:28px;box-shadow:var(--sh);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h2 style="margin:0;font-family:var(--fd);font-size:1.6rem;">Skyjo Regeln</h2>
+      <button class="btn ghost" id="closeRules">✕ Schließen</button>
+    </div>
+    <div style="display:grid;gap:14px;font-size:.95rem;line-height:1.6;color:var(--text);">
+      <section>
+        <strong>🎯 Ziel</strong><br>
+        Über mehrere Runden so wenige Punkte wie möglich sammeln. Wer zuerst 100 Punkte erreicht, löst das Spielende aus — gewonnen hat dann der Spieler mit den wenigsten Gesamtpunkten.
       </section>
-
-      <section class="panel">
-        <h2>Steuerung</h2>
-        <div class="action-row" style="margin-bottom:10px;">
-          <button class="primary" id="startBtn">▶ Starten</button>
-          <button class="ghost" id="newRoundBtn">Neue Runde</button>
-          <button class="danger" id="resetBtn">Reset</button>
-        </div>
-        <div class="status" id="statusBox">Erstelle einen Raum oder verbinde dich.</div>
+      <section>
+        <strong>🃏 Karten</strong><br>
+        150 Karten: –2 (×5), –1 (×10), 0 (×15), 1–12 (je ×10). Jeder bekommt 12 Karten, verdeckt im 3×4-Raster ausgelegt.
       </section>
-
-      <section class="panel">
-        <h2>Regeln</h2>
-        <div class="rules-box">
-          <strong>Ziel:</strong> Möglichst wenige Punkte.<br>
-          <strong>Setup:</strong> 2 eigene Karten aufdecken.<br>
-          <strong>Zug:</strong> Vom Stapel oder Ablage ziehen → tauschen oder abwerfen + verdeckte aufdecken.<br>
-          <strong>Spalten-Regel ★:</strong> 3 gleiche aufgedeckte Karten in einer Spalte → Spalte fliegt raus!<br>
-          <strong>Rundenende:</strong> Wer alle Karten offen hat → Runde endet.<br>
-          <strong>Verdopplung:</strong> Wer beendet aber nicht den niedrigsten Wert hat → ×2.<br>
-          <strong>Spielende:</strong> Jemand ≥ 100 Punkte → wer am wenigsten hat gewinnt.
-        </div>
+      <section>
+        <strong>🚀 Rundenstart</strong><br>
+        Jede Person deckt <strong>2 beliebige</strong> Startkarten auf.<br>
+        <strong>Wer beginnt?</strong> Die Person mit dem höheren Anfangspunktestand. Bei Gleichstand: beide decken weiter auf oder ihr einigt euch selbst. Jede folgende Runde beginnt der Sieger (niedrigste Punktzahl) der letzten Runde.
       </section>
-
-      <section class="panel">
-        <h2>Log</h2>
-        <div class="log" id="logBox"></div>
+      <section>
+        <strong>▶️ Zugablauf</strong><br>
+        1. <strong>Ziehen</strong>: Entweder vom Nachziehstapel (verdeckt) oder vom Ablagestapel (sichtbar).<br>
+        2a. <strong>Ablage gezogen</strong>: Muss sofort mit einer eigenen Karte getauscht werden (offen oder verdeckt, egal).<br>
+        2b. <strong>Stapel gezogen (verdeckt)</strong>:<br>
+        &nbsp;&nbsp;— Karte behalten → eine eigene Karte damit tauschen.<br>
+        &nbsp;&nbsp;— Karte ablegen → eine eigene <em>verdeckte</em> Karte aufdecken.
       </section>
-    </aside>
-
-    <main class="board">
-      <section class="panel">
-        <div class="player-head">
-          <div class="player-name">Spielübersicht</div>
-          <div class="player-stats"><span>Runde: <strong id="roundNo">1</strong></span><span>Ziel: <strong>100 Punkte</strong></span></div>
-        </div>
-        <div class="play-area">
-          <div class="pile">
-            <h3>Nachziehstapel</h3>
-            <div id="deckPile"></div>
-            <button class="primary" id="drawDeckBtn">Vom Stapel ziehen</button>
-            <p id="deckCount">0 Karten</p>
-          </div>
-          <div class="pile">
-            <h3>Ablagestapel</h3>
-            <div id="discardPile"></div>
-            <button class="ghost" id="drawDiscardBtn">Ablage nehmen</button>
-            <p id="discardInfo">–</p>
-          </div>
-          <div class="pile">
-            <h3>Gezogene Karte</h3>
-            <div id="pendingPile"></div>
-            <button class="ghost" id="discardPendingBtn">Abwerfen + aufdecken</button>
-            <p id="pendingInfo">Noch nichts gezogen</p>
-          </div>
-        </div>
+      <section>
+        <strong>🔢 Sonderregel: Spalten-Drilling</strong><br>
+        Wer drei gleiche Werte senkrecht in einer Spalte hat, <strong>muss</strong> alle drei auf den Ablagestapel legen. Das gilt auch noch beim abschließenden Aufdecken nach Rundenende.
       </section>
-
-      <section class="player-section">
-        <div class="player-head">
-          <div class="player-name"><span class="dot" id="oppDot"></span><span id="oppName">Gegnerin</span></div>
-          <div class="player-stats"><span>Runde: <strong id="oppRoundScore">?</strong></span><span>Gesamt: <strong id="oppTotalScore">0</strong></span></div>
-        </div>
-        <div class="grid" id="oppGrid"></div>
+      <section>
+        <strong>⏹️ Rundenende</strong><br>
+        Sobald jemand alle 12 Karten aufgedeckt hat, darf jeder andere noch <strong>genau einen</strong> weiteren Zug machen. Dann decken alle verbleibenden verdeckten Karten auf und zählen.<br>
+        <strong>Strafe</strong>: Wer die Runde beendet und <em>nicht</em> die niedrigste Rundenpontezahl hat, bekommt seine Punktzahl <strong>verdoppelt</strong> (nur bei positivem Ergebnis). Bei negativem Wert keine Verdoppelung.
       </section>
-
-      <section class="player-section">
-        <div class="player-head">
-          <div class="player-name"><span class="dot self" id="selfDot"></span><span id="selfName">Du</span></div>
-          <div class="player-stats"><span>Runde: <strong id="selfRoundScore">?</strong></span><span>Gesamt: <strong id="selfTotalScore">0</strong></span></div>
-        </div>
-        <div class="grid" id="selfGrid"></div>
+      <section>
+        <strong>🏁 Spielende</strong><br>
+        Wird nach einer Runde ein Spieler ≥ 100, endet das Spiel. Die Person mit dem <strong>niedrigsten Gesamtscore</strong> gewinnt.
       </section>
-    </main>
+    </div>
   </div>
 </div>
 
-<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+<div class="layout">
+<aside class="stack">
+  <section class="panel">
+    <h2>Verbindung</h2>
+    <div class="field">
+      <label for="nameInput">Dein Name</label>
+      <input id="nameInput" maxlength="22" placeholder="z. B. Simeon"/>
+    </div>
+    <div class="row">
+      <button class="btn primary" id="hostBtn">Raum erstellen</button>
+      <button class="btn ghost" id="joinModeBtn">Beitreten</button>
+      <button class="btn ghost" id="localBtn">Lokal</button>
+    </div>
+    <div class="stack" id="joinBox" style="display:none;">
+      <div class="field"><label for="roomInput">Raumcode</label><input id="roomInput" placeholder="6-stelliger Code"/></div>
+      <button class="btn primary" id="connectBtn">Verbinden</button>
+    </div>
+    <div class="divider"></div>
+    <div class="badge-row">
+      <div class="badge">Peer: <strong id="peerState">offline</strong></div>
+      <div class="badge">Rolle: <strong id="roleState">–</strong></div>
+      <div class="badge">Conn: <strong id="connState">–</strong></div>
+    </div>
+    <div class="field" id="roomArea" style="display:none;margin-top:8px;">
+      <label>Dein Raumcode — schick ihn deiner Freundin</label>
+      <div class="copy-wrap">
+        <input id="roomCode" readonly/>
+        <button class="btn ghost" id="copyBtn">Kopieren</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Steuerung</h2>
+    <div class="row" style="margin-bottom:10px;">
+      <button class="btn primary" id="startBtn">Spiel starten</button>
+      <button class="btn ghost" id="newRoundBtn">Neue Runde</button>
+      <button class="btn danger" id="resetBtn">Reset</button>
+    </div>
+    <div class="status-box" id="statusBox">Erstelle oder tritt einem Raum bei, dann könnt ihr starten.</div>
+  </section>
+
+  <section class="panel">
+    <h2>Punktestand</h2>
+    <table class="score-table">
+      <thead><tr><th>Spieler</th><th>Letzte Runde</th><th>Gesamt</th></tr></thead>
+      <tbody id="scoreBody"><tr><td colspan="3" style="color:var(--muted)">Noch kein Spiel</td></tr></tbody>
+    </table>
+  </section>
+
+  <section class="panel">
+    <h2>Log</h2>
+    <div class="log" id="logBox"></div>
+  </section>
+</aside>
+
+<main class="board">
+  <section class="panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:14px;">
+      <span style="font-weight:700;">Spielbereich</span>
+      <div class="player-stats">
+        <span>Runde: <strong id="roundNo">–</strong></span>
+        <span>Ziel: <strong>100</strong> Punkte</span>
+      </div>
+    </div>
+    <div class="play-area">
+      <div class="pile">
+        <h3>Nachziehstapel</h3>
+        <div id="deckPile"></div>
+        <button class="btn primary" id="drawDeckBtn">Vom Stapel ziehen</button>
+        <p id="deckCount">0 Karten</p>
+      </div>
+      <div class="pile">
+        <h3>Ablagestapel</h3>
+        <div id="discardPile"></div>
+        <button class="btn ghost" id="drawDiscardBtn">Ablage nehmen</button>
+        <p id="discardInfo">–</p>
+      </div>
+      <div class="pile">
+        <h3>Gezogene Karte</h3>
+        <div id="pendingPile"></div>
+        <button class="btn accent-btn" id="discardPendingBtn" style="display:none;">Abwerfen → Karte aufdecken</button>
+        <p id="pendingInfo">Noch nichts gezogen</p>
+      </div>
+    </div>
+    <div id="flipHint" class="flip-mode-hint" style="display:none;margin-top:12px;">
+      👇 Klicke jetzt eine <strong>verdeckte</strong> Karte in deinem Feld an.
+    </div>
+  </section>
+
+  <section class="player-section" id="oppSection">
+    <div class="player-head">
+      <div class="player-name"><span class="dot" id="oppDot"></span><span id="oppName">Gegnerin</span></div>
+      <div class="player-stats">
+        <span>Rundenscore: <strong id="oppRoundScore">?</strong></span>
+        <span>Gesamt: <strong id="oppTotalScore">0</strong></span>
+        <span id="oppLastZug" style="color:var(--accent);display:none;font-weight:600;">✦ Letzter Zug!</span>
+      </div>
+    </div>
+    <div class="grid" id="oppGrid"></div>
+  </section>
+
+  <section class="player-section" id="selfSection">
+    <div class="player-head">
+      <div class="player-name"><span class="dot self" id="selfDot"></span><span id="selfName">Du</span></div>
+      <div class="player-stats">
+        <span>Rundenscore: <strong id="selfRoundScore">?</strong></span>
+        <span>Gesamt: <strong id="selfTotalScore">0</strong></span>
+        <span id="selfLastZug" style="color:var(--accent);display:none;font-weight:600;">✦ Letzter Zug!</span>
+      </div>
+    </div>
+    <div class="grid" id="selfGrid"></div>
+  </section>
+</main>
+</div>
+</div>
+
 <script>
-// ── GAME ENGINE ───────────────────────────────────────────────────────────────
+const $=s=>document.querySelector(s);
+const ui={
+  nameInput:$('#nameInput'),hostBtn:$('#hostBtn'),joinModeBtn:$('#joinModeBtn'),
+  localBtn:$('#localBtn'),joinBox:$('#joinBox'),roomInput:$('#roomInput'),
+  connectBtn:$('#connectBtn'),roomArea:$('#roomArea'),roomCode:$('#roomCode'),
+  copyBtn:$('#copyBtn'),peerState:$('#peerState'),roleState:$('#roleState'),
+  connState:$('#connState'),startBtn:$('#startBtn'),newRoundBtn:$('#newRoundBtn'),
+  resetBtn:$('#resetBtn'),drawDeckBtn:$('#drawDeckBtn'),drawDiscardBtn:$('#drawDiscardBtn'),
+  discardPendingBtn:$('#discardPendingBtn'),deckPile:$('#deckPile'),
+  discardPile:$('#discardPile'),pendingPile:$('#pendingPile'),deckCount:$('#deckCount'),
+  discardInfo:$('#discardInfo'),pendingInfo:$('#pendingInfo'),statusBox:$('#statusBox'),
+  logBox:$('#logBox'),oppGrid:$('#oppGrid'),selfGrid:$('#selfGrid'),
+  oppName:$('#oppName'),selfName:$('#selfName'),oppDot:$('#oppDot'),selfDot:$('#selfDot'),
+  oppRoundScore:$('#oppRoundScore'),selfRoundScore:$('#selfRoundScore'),
+  oppTotalScore:$('#oppTotalScore'),selfTotalScore:$('#selfTotalScore'),
+  roundNo:$('#roundNo'),themeBtn:$('#themeBtn'),scoreBody:$('#scoreBody'),
+  flipHint:$('#flipHint'),rulesBtn:$('#rulesBtn'),rulesModal:$('#rulesModal'),
+  closeRules:$('#closeRules'),oppLastZug:$('#oppLastZug'),selfLastZug:$('#selfLastZug')
+};
+
+const app={peer:null,conn:null,role:null,localMode:false,playerIndex:0,
+  lastView:null,hostName:'Host',guestName:'Gast',state:null,flipMode:false};
+
+function rId(n=6){const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let o='';for(let i=0;i<n;i++)o+=c[Math.floor(Math.random()*c.length)];return o;}
+
 function makeDeck(){
   const d=[];
-  const a=(v,n)=>{for(let i=0;i<n;i++)d.push({v,up:false,gone:false,id:Math.random().toString(36).slice(2)});};
+  const a=(v,n)=>{for(let i=0;i<n;i++)d.push({value:v,faceUp:false,id:crypto.randomUUID()});};
   a(-2,5);a(-1,10);a(0,15);
   for(let v=1;v<=12;v++)a(v,10);
   return shuffle(d);
 }
-function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
-// col c = indices [c*3, c*3+1, c*3+2]
-function colCards(g,c){return[g[c*3],g[c*3+1],g[c*3+2]];}
-function checkCols(g){
-  let hit=false;
+function checkColumn(player){
+  // Check each of 4 columns (indices 0,1,2,3 in row 0; 4,5,6,7 in row 1; 8,9,10,11 in row 2)
+  // Layout: 3 rows x 4 cols. Index: col c => indices c, c+4, c+8
+  const removed=[];
   for(let c=0;c<4;c++){
-    const cc=colCards(g,c);
-    if(cc.every(x=>x.up&&!x.gone)&&cc[0].v===cc[1].v&&cc[1].v===cc[2].v){
-      cc.forEach(x=>x.gone=true);hit=true;
+    const i0=c,i1=c+4,i2=c+8;
+    const g=player.grid;
+    if(g[i0]&&g[i1]&&g[i2]&&!g[i0].removed&&!g[i1].removed&&!g[i2].removed
+       &&g[i0].faceUp&&g[i1].faceUp&&g[i2].faceUp
+       &&g[i0].value===g[i1].value&&g[i1].value===g[i2].value){
+      removed.push(i0,i1,i2);
     }
   }
-  return hit;
+  return removed;
 }
-function activeScore(g){return g.filter(x=>!x.gone).reduce((s,x)=>s+x.v,0);}
-function allUp(g){const a=g.filter(x=>!x.gone);return a.length>0&&a.every(x=>x.up);}
 
-function newRound(prevTotals){
-  const deck=makeDeck();
-  const players=[0,1].map(i=>({
-    id:i,name:i===0?'Host':'Gast',
-    grid:Array.from({length:12},()=>({...deck.pop(),gone:false})),
-    total:prevTotals?.[i]??0
-  }));
-  return{players,deck,discard:[{...deck.pop(),up:true}],cur:0,phase:'setup',
-    pending:null,pendingSrc:null,setupFlips:[0,0],round:1,log:['Neue Runde! Decke 2 Karten auf.']};
-}
-function addLog(s,t){s.log=[t,...s.log].slice(0,50);}
-function clone(o){return JSON.parse(JSON.stringify(o));}
-
-function finishRound(s){
-  s.phase='round-over';
-  // flip all remaining
-  s.players.forEach(p=>p.grid.forEach(c=>{if(!c.gone)c.up=true;}));
-  // final column check for both
-  s.players.forEach(p=>checkCols(p.grid));
-  const sc=s.players.map(p=>activeScore(p.grid));
-  const ender=s.cur;
-  let doubled=false;
-  if(sc[ender]>=sc[1-ender]){sc[ender]*=2;doubled=true;}
-  s.players.forEach((p,i)=>p.total+=sc[i]);
-  addLog(s,`🏁 ${s.players[ender].name} beendete Runde.${doubled?' VERDOPPLUNG!':''}`);
-  addLog(s,`📊 ${s.players[0].name}: +${sc[0]} | ${s.players[1].name}: +${sc[1]}`);
-  addLog(s,`🔢 Gesamt: ${s.players[0].name} ${s.players[0].total} | ${s.players[1].name} ${s.players[1].total}`);
-  if(s.players.some(p=>p.total>=100)){
-    s.phase='game-over';
-    const w=[...s.players].sort((a,b)=>a.total-b.total)[0];
-    addLog(s,`🏆 ${w.name} gewinnt mit ${w.total} Punkten!`);
+function applyColumnRemoval(player,state,playerName){
+  const cols=checkColumn(player);
+  if(cols.length){
+    cols.forEach(i=>{
+      state.discard.push({...player.grid[i],faceUp:true});
+      player.grid[i]={...player.grid[i],removed:true};
+    });
+    stateLog(state,`${playerName} hat einen Drilling – 3 Karten werden entfernt!`);
   }
 }
 
-// ── APP ───────────────────────────────────────────────────────────────────────
-const $=s=>document.querySelector(s);
-// flipMode: when true, next card click = discard-flip (not swap)
-let flipMode=false;
+function scoreGrid(grid){return grid.reduce((s,c)=>c.removed?s:s+c.value,0);}
+function visibleScore(grid){return grid.reduce((s,c)=>c.removed?s:(c.faceUp?s+c.value:s),0);}
+function allRevealed(grid){return grid.every(c=>c.removed||c.faceUp);}
+function activeCards(grid){return grid.filter(c=>!c.removed);}
 
-const app={peer:null,conn:null,role:null,localMode:false,playerIndex:0,lastView:null,hostName:'Host',guestName:'Gast',state:null};
+function stateLog(state,text){state.log.unshift(text);state.log=state.log.slice(0,50);}
+
+function setupRound(prevTotals){
+  const deck=makeDeck();
+  const players=[0,1].map(i=>({
+    id:i,
+    name:i===0?app.hostName:app.guestName,
+    grid:Array.from({length:12},()=>({...deck.pop()})),
+    totalScore:prevTotals?.[i]??0,
+    lastZug:false
+  }));
+  const discard=[{...deck.pop(),faceUp:true}];
+  return{
+    players,deck,discard,current:0,phase:'setup',
+    pendingDraw:null,pendingSource:null,
+    round:(app.state?.round||0)+1,
+    setupFlips:[0,0],endedBy:null,lastZugFor:null,
+    log:['Neue Runde — jede Person deckt 2 Startkarten auf.']
+  };
+}
+
+function clone(o){return JSON.parse(JSON.stringify(o));}
 
 function syncNames(){
   if(!app.state)return;
-  app.state.players[0].name=app.hostName;
-  app.state.players[1].name=app.guestName;
+  app.state.players[0].name=app.hostName||'Host';
+  app.state.players[1].name=app.guestName||'Gast';
 }
-function randomId(n=6){const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let o='';for(let i=0;i<n;i++)o+=c[Math.floor(Math.random()*c.length)];return o;}
 
-function viewFor(state,idx){
-  if(!state)return null;
-  const s=clone(state);
+function refillDeck(state){
+  if(state.deck.length>0)return;
+  const top=state.discard.pop();
+  state.deck=shuffle(state.discard.map(c=>({...c,faceUp:false,id:crypto.randomUUID()})));
+  state.discard=[top];
+  stateLog(state,'Nachziehstapel leer – Ablagestapel wurde neu gemischt.');
+}
+
+// Determine who starts next round: winner of last round (lowest score)
+function determineStarter(state){
+  const scores=state.players.map(p=>scoreGrid(p.grid));
+  return scores[0]<=scores[1]?0:1;
+}
+
+function finishRound(state){
+  state.phase='round-over';
+  // Reveal all
+  state.players.forEach(p=>p.grid.forEach(c=>{if(!c.removed)c.faceUp=true;}));
+  // Check columns after reveal
+  state.players.forEach(p=>applyColumnRemoval(p,state,p.name));
+
+  const scores=state.players.map(p=>scoreGrid(p.grid));
+  const endedBy=state.endedBy;
+
+  // Penalty: if ender doesn't have strictly lowest score, double their score (only if positive)
+  const otherScore=scores[1-endedBy];
+  if(scores[endedBy]>=otherScore && scores[endedBy]>0){
+    scores[endedBy]*=2;
+    stateLog(state,`${state.players[endedBy].name} hat die Runde beendet, aber nicht die niedrigste Punktzahl → Strafe: Punkte verdoppelt!`);
+  }
+  state.players.forEach((p,i)=>p.totalScore+=scores[i]);
+  state.roundScores=scores;
+  stateLog(state,`Runde beendet durch ${state.players[endedBy].name}. Rundenscores: ${state.players[0].name} ${scores[0]}, ${state.players[1].name} ${scores[1]}.`);
+
+  if(state.players.some(p=>p.totalScore>=100)){
+    state.phase='game-over';
+    const winner=[...state.players].sort((a,b)=>a.totalScore-b.totalScore)[0];
+    stateLog(state,`🏆 Spiel vorbei! ${winner.name} gewinnt mit ${winner.totalScore} Punkten.`);
+  }
+}
+
+function hostAction(action,fromPlayer){
+  const S=app.state;
+
+  if(action.type==='start'&&app.role==='host'){
+    const prevTotals=S?S.players.map(p=>p.totalScore):null;
+    app.state=setupRound(null);
+    syncNames();
+    // Determine start player by higher setupFlip score after setup phase
+    pushState();return;
+  }
+  if(action.type==='new-round'&&app.role==='host'){
+    if(!S||!['round-over','game-over'].includes(S.phase))return;
+    const totals=S.phase==='game-over'?null:S.players.map(p=>p.totalScore);
+    const starter=S.phase==='round-over'?determineStarter(S):0;
+    app.state=setupRound(totals);
+    app.state.current=starter;
+    syncNames();
+    pushState();return;
+  }
+  if(action.type==='reset'&&app.role==='host'){app.state=null;pushState();return;}
+  if(action.type==='set-name'){
+    if(fromPlayer===0)app.hostName=action.name||'Host';
+    if(fromPlayer===1)app.guestName=action.name||'Gast';
+    syncNames();pushState();return;
+  }
+
+  if(!S)return;
+  const me=S.players[fromPlayer];
+  if(!me)return;
+
+  // SETUP PHASE: flip 2 starter cards
+  if(S.phase==='setup'){
+    if(action.type!=='setup-flip')return;
+    const card=me.grid[action.index];
+    if(!card||card.faceUp)return;
+    card.faceUp=true;
+    S.setupFlips[fromPlayer]+=1;
+    stateLog(S,`${me.name} deckt Startkarte auf (Wert: ${card.value}).`);
+    if(S.setupFlips.every(n=>n>=2)){
+      // Who starts? Higher sum of revealed cards
+      const sums=S.players.map(p=>p.grid.reduce((s,c)=>s+(c.faceUp?c.value:0),0));
+      S.current=sums[0]>=sums[1]?0:1;
+      S.phase='turn';
+      stateLog(S,`${S.players[S.current].name} hat mehr Punkte aufgedeckt und beginnt.`);
+    }
+    pushState();return;
+  }
+
+  if(!['turn','last-turn'].includes(S.phase))return;
+  if(S.current!==fromPlayer)return;
+
+  if(action.type==='draw-deck'){
+    if(S.pendingDraw)return;
+    refillDeck(S);
+    S.pendingDraw={...S.deck.pop(),faceUp:true};
+    S.pendingSource='deck';
+    stateLog(S,`${me.name} zieht vom Stapel.`);
+    pushState();return;
+  }
+
+  if(action.type==='draw-discard'){
+    if(S.pendingDraw||!S.discard.length)return;
+    // Must swap when taking from discard
+    S.pendingDraw={...S.discard.pop(),faceUp:true};
+    S.pendingSource='discard';
+    stateLog(S,`${me.name} nimmt die Ablage (${S.pendingDraw.value}) — muss tauschen.`);
+    pushState();return;
+  }
+
+  if(action.type==='swap'){
+    if(!S.pendingDraw)return;
+    const target=me.grid[action.index];
+    if(!target||target.removed)return;
+    const old={...target,faceUp:true};
+    me.grid[action.index]={...S.pendingDraw,faceUp:true};
+    S.discard.push(old);
+    stateLog(S,`${me.name} tauscht eine Karte (legt ${old.value} ab).`);
+    applyColumnRemoval(me,S,me.name);
+    S.pendingDraw=null;S.pendingSource=null;
+    afterTurn(S,fromPlayer);
+    pushState();return;
+  }
+
+  if(action.type==='discard-pending-flip'){
+    // Only allowed if drew from deck (not discard)
+    if(!S.pendingDraw||S.pendingSource!=='deck')return;
+    const target=me.grid[action.index];
+    if(!target||target.removed||target.faceUp)return;
+    S.discard.push({...S.pendingDraw,faceUp:true});
+    target.faceUp=true;
+    stateLog(S,`${me.name} legt die gezogene Karte ab und deckt ${target.value} auf.`);
+    applyColumnRemoval(me,S,me.name);
+    S.pendingDraw=null;S.pendingSource=null;
+    afterTurn(S,fromPlayer);
+    pushState();return;
+  }
+}
+
+function afterTurn(S,fromPlayer){
+  const me=S.players[fromPlayer];
+  if(S.phase==='turn'&&allRevealed(me.grid)){
+    // This player finished — others get one last turn
+    S.phase='last-turn';
+    S.endedBy=fromPlayer;
+    S.lastZugFor=[];
+    stateLog(S,`${me.name} hat alle Karten aufgedeckt! Jeder andere darf noch einen Zug machen.`);
+    // advance to next player for their last turn
+    const next=(fromPlayer+1)%2;
+    S.current=next;
+    S.lastZugFor.push(next);
+    return;
+  }
+  if(S.phase==='last-turn'){
+    // After the last-turn player acts, round ends
+    finishRound(S);
+    return;
+  }
+  // Normal: next player
+  S.current=(S.current+1)%2;
+}
+
+function privateViewFor(idx){
+  if(!app.state)return null;
+  const s=clone(app.state);
   s.viewer=idx;
   s.players.forEach((p,i)=>{
-    const act=p.grid.filter(x=>!x.gone);
-    p.roundScore=(act.every(x=>x.up)||['round-over','game-over'].includes(s.phase))?activeScore(p.grid):'?';
+    p.roundScore=(['round-over','game-over'].includes(s.phase)||allRevealed(p.grid))
+      ?scoreGrid(p.grid):'?';
     if(i!==idx&&!['round-over','game-over'].includes(s.phase)){
-      p.grid=p.grid.map(c=>c.up||c.gone?c:{...c,v:null});
+      p.grid=p.grid.map(c=>c.faceUp||c.removed?c:{...c,value:null});
     }
   });
-  if(s.pending&&s.cur!==idx&&s.pendingSrc==='deck'&&!['round-over','game-over'].includes(s.phase)){
-    s.pending={...s.pending,v:null,up:false};
+  if(s.pendingDraw&&s.current!==idx&&s.pendingSource==='deck'){
+    s.pendingDraw={...s.pendingDraw,value:null,faceUp:false};
   }
   return s;
 }
 
+function sendToGuest(data){if(app.conn&&app.conn.open)app.conn.send(data);}
+
 function pushState(){
-  if(app.localMode){app.lastView=viewFor(app.state,0);render();return;}
+  if(app.localMode){app.lastView=privateViewFor(0);render();return;}
   if(app.role==='host'){
-    app.lastView=viewFor(app.state,0);render();
-    if(app.conn?.open)app.conn.send({t:'state',view:viewFor(app.state,1)});
-  }
-}
-
-function doAction(action,from){
-  // Global commands
-  if(action.t==='start'&&app.role==='host'){
-    const totals=app.state?.players?.map(p=>p.total);
-    const r=(app.state?.round||0)+1;
-    app.state=newRound(totals);
-    app.state.round=r;
-    syncNames();pushState();return;
-  }
-  if(action.t==='new-round'&&app.role==='host'){
-    if(!['round-over','game-over'].includes(app.state?.phase))return;
-    const totals=app.state.phase==='game-over'?[0,0]:app.state.players.map(p=>p.total);
-    const r=app.state.phase==='game-over'?1:(app.state.round||1)+1;
-    app.state=newRound(totals);app.state.round=r;
-    syncNames();pushState();return;
-  }
-  if(action.t==='reset'&&app.role==='host'){app.state=null;pushState();return;}
-  if(action.t==='set-name'){
-    if(from===0)app.hostName=action.name||'Host';
-    if(from===1)app.guestName=action.name||'Gast';
-    syncNames();pushState();return;
-  }
-  if(!app.state||!['setup','turn'].includes(app.state.phase))return;
-  const me=app.state.players[from];
-
-  // Setup phase
-  if(app.state.phase==='setup'){
-    if(action.t!=='setup-flip')return;
-    const c=me.grid[action.i];
-    if(!c||c.up||c.gone)return;
-    c.up=true;app.state.setupFlips[from]++;
-    if(checkCols(me.grid))addLog(app.state,`💥 ${me.name}: Spalte entfernt!`);
-    addLog(app.state,`${me.name} deckt Karte auf (${app.state.setupFlips[from]}/2)`);
-    if(app.state.setupFlips.every(n=>n>=2)){
-      app.state.phase='turn';app.state.cur=0;
-      addLog(app.state,`✅ Los! ${app.state.players[0].name} beginnt.`);
-    }
-    pushState();return;
-  }
-
-  // Turn phase — only current player
-  if(app.state.cur!==from)return;
-
-  if(action.t==='draw-deck'){
-    if(app.state.pending)return;
-    if(app.state.deck.length===0){
-      const top=app.state.discard.pop();
-      app.state.deck=shuffle(app.state.discard.map(c=>({...c,up:false,id:Math.random().toString(36).slice(2)})));
-      app.state.discard=[top];
-      addLog(app.state,'🔄 Stapel neu gemischt.');
-    }
-    app.state.pending={...app.state.deck.pop(),up:true};
-    app.state.pendingSrc='deck';
-    addLog(app.state,`${me.name} zieht: ${app.state.pending.v}`);
-    pushState();return;
-  }
-
-  if(action.t==='draw-discard'){
-    if(app.state.pending||!app.state.discard.length)return;
-    app.state.pending={...app.state.discard.pop(),up:true};
-    app.state.pendingSrc='discard';
-    addLog(app.state,`${me.name} nimmt Ablage: ${app.state.pending.v}`);
-    pushState();return;
-  }
-
-  if(action.t==='swap'){
-    if(!app.state.pending)return;
-    const t=me.grid[action.i];
-    if(!t||t.gone)return;
-    const old={...t,up:true};
-    me.grid[action.i]={...app.state.pending,up:true,gone:false};
-    app.state.discard.push(old);
-    app.state.pending=null;app.state.pendingSrc=null;
-    addLog(app.state,`${me.name} tauscht → ${me.grid[action.i].v}`);
-    if(checkCols(me.grid))addLog(app.state,`💥 ${me.name}: Spalte entfernt!`);
-    if(allUp(me.grid))finishRound(app.state);else app.state.cur=1-app.state.cur;
-    pushState();return;
-  }
-
-  if(action.t==='discard-flip'){
-    if(!app.state.pending)return;
-    const t=me.grid[action.i];
-    if(!t||t.up||t.gone)return;
-    app.state.discard.push({...app.state.pending,up:true});
-    t.up=true;
-    app.state.pending=null;app.state.pendingSrc=null;
-    addLog(app.state,`${me.name} wirft ab, deckt ${t.v} auf`);
-    if(checkCols(me.grid))addLog(app.state,`💥 ${me.name}: Spalte entfernt!`);
-    if(allUp(me.grid))finishRound(app.state);else app.state.cur=1-app.state.cur;
-    pushState();return;
+    app.lastView=privateViewFor(0);render();
+    sendToGuest({type:'state',view:privateViewFor(1)});
   }
 }
 
 function sendAction(action){
-  if(['swap','discard-flip','setup-flip'].includes(action.t)){
-    flipMode=false; // always reset after card action
-  }
-  if(app.localMode){doAction(action,0);return;}
-  if(app.role==='host')doAction(action,0);
-  else if(app.conn?.open)app.conn.send({t:'action',action});
+  if(app.localMode){hostAction(action,0);return;}
+  if(app.role==='host')hostAction(action,0);
+  else if(app.conn?.open)app.conn.send({type:'action',action});
 }
 
-// ── NETWORK ───────────────────────────────────────────────────────────────────
-function cleanupNetwork(){
-  try{app.conn?.close();}catch{}try{app.peer?.destroy();}catch{}
-  app.conn=null;app.peer=null;app.state=null;app.lastView=null;flipMode=false;
-  ui.roomArea.style.display='none';ui.roomCode.value='';
-  ui.peerState.textContent='offline';ui.connState.textContent='–';ui.roleState.textContent='–';
+function cardEl(card,opts={}){
+  const div=document.createElement(opts.selectable?'button':'div');
+  div.className='card';
+  if(opts.selectable)div.type='button';
+  if(!card.faceUp&&!card.removed)div.classList.add('face-down');
+  if(opts.back)div.classList.add('back');
+  if(opts.pending)div.classList.add('pending-card');
+  if(opts.selectable)div.classList.add('selectable');
+  if(card.removed)div.classList.add('removed');
+  if(card.faceUp&&!card.removed){
+    if(typeof card.value==='number'&&card.value<0)div.classList.add('negative');
+    if(typeof card.value==='number'&&card.value>=8)div.classList.add('high');
+  }
+  div.innerHTML=card.faceUp&&!card.removed?`<span class="mini">${opts.label||''}</span>${card.value}`:'';
+  return div;
 }
+
+function renderPile(el,type,view){
+  el.innerHTML='';
+  if(type==='deck'){const c=cardEl({faceUp:false},{back:true});el.appendChild(c);return;}
+  if(type==='discard'){
+    const top=view.discard[view.discard.length-1];
+    el.appendChild(top?cardEl(top,{label:'Ablage'}):cardEl({faceUp:false},{back:true}));
+    return;
+  }
+  if(type==='pending'){
+    if(!view.pendingDraw){const c=document.createElement('div');c.className='card face-down';c.style.opacity='.4';el.appendChild(c);return;}
+    el.appendChild(cardEl(view.pendingDraw,{label:'Gezogen',pending:true}));
+  }
+}
+
+function renderGrid(el,player,isSelf,view){
+  el.innerHTML='';
+  if(!view)return;
+  const isMyTurn=view.phase==='turn'&&view.current===view.viewer;
+  const isMyLastTurn=view.phase==='last-turn'&&view.current===view.viewer&&(view.lastZugFor||[]).includes(view.viewer);
+  const canAct=(isMyTurn||isMyLastTurn);
+  const isSetup=view.phase==='setup';
+  const fm=app.flipMode;
+
+  player.grid.forEach((card,index)=>{
+    let selectable=false;
+    if(isSelf&&isSetup&&!card.faceUp&&!card.removed&&(app.state?.setupFlips?.[view.viewer]??0)<2)selectable=true;
+    if(isSelf&&canAct&&view.pendingDraw){
+      if(fm){
+        // flip mode: only hidden, non-removed
+        if(!card.faceUp&&!card.removed)selectable=true;
+      } else {
+        // swap mode: any non-removed card
+        if(!card.removed)selectable=true;
+      }
+    }
+    if(!isSelf)selectable=false;
+
+    const node=cardEl(card,{selectable});
+    if(selectable){
+      node.addEventListener('click',()=>{
+        if(isSetup&&(app.state?.setupFlips?.[view.viewer]??0)<2&&!card.faceUp){
+          sendAction({type:'setup-flip',index});return;
+        }
+        if(!canAct||!view.pendingDraw)return;
+        if(fm){
+          sendAction({type:'discard-pending-flip',index});
+          app.flipMode=false;
+        } else {
+          sendAction({type:'swap',index});
+        }
+      });
+    }
+    el.appendChild(node);
+  });
+}
+
+function renderScoreTable(view){
+  if(!view){ui.scoreBody.innerHTML='<tr><td colspan="3" style="color:var(--muted)">Noch kein Spiel</td></tr>';return;}
+  ui.scoreBody.innerHTML=view.players.map(p=>`
+    <tr>
+      <td><strong>${p.name}</strong></td>
+      <td>${view.roundScores?view.roundScores[p.id]:'–'}</td>
+      <td>${p.totalScore}</td>
+    </tr>`).join('');
+}
+
+function render(){
+  const view=app.lastView;
+  ui.roleState.textContent=app.localMode?'lokal':(app.role||'–');
+  ui.connState.textContent=app.localMode?'lokal':(app.conn?.open?'verbunden':'–');
+
+  if(!view){
+    [ui.oppGrid,ui.selfGrid,ui.deckPile,ui.discardPile,ui.pendingPile].forEach(e=>e.innerHTML='');
+    ui.deckCount.textContent='–';ui.discardInfo.textContent='–';
+    ui.pendingInfo.textContent='–';ui.roundNo.textContent='–';
+    renderScoreTable(null);
+    ui.flipHint.style.display='none';
+    ui.discardPendingBtn.style.display='none';
+    return;
+  }
+
+  const self=view.players[view.viewer];
+  const opp=view.players[1-view.viewer];
+
+  ui.selfName.textContent=self.name;
+  ui.oppName.textContent=opp.name;
+  ui.oppRoundScore.textContent=opp.roundScore??'?';
+  ui.selfRoundScore.textContent=self.roundScore??'?';
+  ui.oppTotalScore.textContent=opp.totalScore;
+  ui.selfTotalScore.textContent=self.totalScore;
+  ui.roundNo.textContent=view.round;
+  ui.deckCount.textContent=`${view.deck.length} Karten`;
+  ui.discardInfo.textContent=view.discard.length
+    ?`Oben: ${view.discard[view.discard.length-1].value}`:'Leer';
+  ui.pendingInfo.textContent=view.pendingDraw
+    ?(view.pendingDraw.faceUp?`Gezogen: ${view.pendingDraw.value}`:'Gegnerin zieht verdeckt')
+    :'Noch nichts gezogen';
+
+  const isMyTurn=view.phase==='turn'&&view.current===view.viewer;
+  const isMyLastTurn=view.phase==='last-turn'&&view.current===view.viewer;
+  const canAct=isMyTurn||isMyLastTurn;
+
+  ui.selfDot.classList.toggle('active',canAct);
+  ui.oppDot.classList.toggle('active',view.current!==(view.viewer)&&['turn','last-turn'].includes(view.phase));
+
+  // Last-zug banners
+  const oppIsLastZug=view.phase==='last-turn'&&(view.lastZugFor||[]).includes(1-view.viewer)&&view.current===(1-view.viewer);
+  const selfIsLastZug=isMyLastTurn;
+  ui.oppLastZug.style.display=oppIsLastZug?'':'none';
+  ui.selfLastZug.style.display=selfIsLastZug?'':'none';
+
+  renderPile(ui.deckPile,'deck',view);
+  renderPile(ui.discardPile,'discard',view);
+  renderPile(ui.pendingPile,'pending',view);
+  renderGrid(ui.oppGrid,opp,false,view);
+  renderGrid(ui.selfGrid,self,true,view);
+  renderScoreTable(view);
+
+  // Flip hint + discard button
+  const showFlipHint=canAct&&view.pendingDraw&&app.flipMode&&view.pendingSource==='deck';
+  ui.flipHint.style.display=showFlipHint?'':'none';
+  const canDiscard=canAct&&view.pendingDraw&&view.pendingSource==='deck'&&!app.flipMode;
+  ui.discardPendingBtn.style.display=(canAct&&view.pendingDraw&&view.pendingSource==='deck'&&!app.flipMode)?'':'none';
+
+  // Log
+  ui.logBox.innerHTML='';
+  (view.log||[]).forEach(l=>{
+    const d=document.createElement('div');d.className='log-item';d.textContent=l;ui.logBox.appendChild(d);
+  });
+
+  // Status text
+  let txt='';
+  const ph=view.phase;
+  if(ph==='setup'){
+    const left=2-(app.state?.setupFlips?.[view.viewer]??0);
+    txt=left>0?`Decke ${left} Startkarte(n) in deinem Feld auf.`:`Warte, bis deine Gegnerin auch 2 Karten aufgedeckt hat.`;
+  } else if(ph==='turn'||ph==='last-turn'){
+    if(!canAct){
+      txt=ph==='last-turn'
+        ?`${opp.name} macht ihren letzten Zug — du hast die Runde beendet.`
+        :`${opp.name} ist am Zug.`;
+    } else if(!view.pendingDraw){
+      txt=(isMyLastTurn?'⚠️ Letzter Zug! ':'')+'Ziehe vom Stapel oder nimm die Ablage.';
+    } else if(view.pendingSource==='discard'){
+      txt=`Du hast die Ablage (${view.pendingDraw.value}) genommen — wähle eine Karte in deinem Feld zum Tauschen.`;
+    } else if(app.flipMode){
+      txt='Klicke eine verdeckte Karte in deinem Feld an.';
+    } else {
+      txt=`Gezogen: ${view.pendingDraw.value}. Tausche mit einer eigenen Karte, oder leg die gezogene Karte ab und decke eine verdeckte auf.`;
+    }
+  } else if(ph==='round-over'){
+    txt='Runde beendet! Schau auf den Punktestand und starte eine neue Runde.';
+  } else if(ph==='game-over'){
+    const s=[...view.players].sort((a,b)=>a.totalScore-b.totalScore);
+    txt=`🏆 Spiel vorbei: ${s[0].name} gewinnt mit ${s[0].totalScore} Punkten!`;
+  }
+  ui.statusBox.textContent=txt;
+
+  // Button states
+  ui.drawDeckBtn.disabled=!canAct||!!view.pendingDraw;
+  const discardOk=view.discard.length>0&&!view.pendingDraw;
+  ui.drawDiscardBtn.disabled=!canAct||!discardOk;
+  ui.startBtn.disabled=!(app.localMode||app.role==='host');
+  ui.newRoundBtn.disabled=!(app.localMode||app.role==='host')||!['round-over','game-over'].includes(view.phase);
+}
+
+// Network
 function bindNetwork(){
   app.peer.on('open',id=>{
     ui.peerState.textContent='bereit';
@@ -428,228 +837,104 @@ function bindNetwork(){
   app.peer.on('connection',conn=>{
     if(app.role!=='host')return;
     app.conn=conn;ui.connState.textContent='verbunden';
-    conn.on('open',()=>{conn.send({t:'hello',playerIdx:1});pushState();});
+    conn.on('open',()=>{
+      conn.send({type:'hello',playerIndex:1});
+      pushState();
+    });
     conn.on('data',msg=>{
-      if(msg.t==='action')doAction(msg.action,1);
-      if(msg.t==='set-name')doAction({t:'set-name',name:msg.name},1);
+      if(msg.type==='action')hostAction(msg.action,1);
+      if(msg.type==='set-name')hostAction({type:'set-name',name:msg.name},1);
     });
     conn.on('close',()=>{ui.connState.textContent='getrennt';app.conn=null;});
   });
 }
 
-// ── UI ────────────────────────────────────────────────────────────────────────
-const ui={
-  nameInput:$('#nameInput'),hostBtn:$('#hostBtn'),joinModeBtn:$('#joinModeBtn'),localBtn:$('#localBtn'),
-  joinBox:$('#joinBox'),roomInput:$('#roomInput'),connectBtn:$('#connectBtn'),
-  roomArea:$('#roomArea'),roomCode:$('#roomCode'),copyBtn:$('#copyBtn'),
-  peerState:$('#peerState'),roleState:$('#roleState'),connState:$('#connState'),
-  startBtn:$('#startBtn'),newRoundBtn:$('#newRoundBtn'),resetBtn:$('#resetBtn'),
-  drawDeckBtn:$('#drawDeckBtn'),drawDiscardBtn:$('#drawDiscardBtn'),discardPendingBtn:$('#discardPendingBtn'),
-  deckPile:$('#deckPile'),discardPile:$('#discardPile'),pendingPile:$('#pendingPile'),
-  deckCount:$('#deckCount'),discardInfo:$('#discardInfo'),pendingInfo:$('#pendingInfo'),
-  statusBox:$('#statusBox'),logBox:$('#logBox'),
-  oppGrid:$('#oppGrid'),selfGrid:$('#selfGrid'),oppName:$('#oppName'),selfName:$('#selfName'),
-  oppDot:$('#oppDot'),selfDot:$('#selfDot'),oppRoundScore:$('#oppRoundScore'),selfRoundScore:$('#selfRoundScore'),
-  oppTotalScore:$('#oppTotalScore'),selfTotalScore:$('#selfTotalScore'),roundNo:$('#roundNo'),themeBtn:$('#themeBtn')
-};
-
-function mkCard(card,opts={}){
-  const el=document.createElement('button');
-  el.className='card'+(card.up?'':(card.gone?'':' face-down'));
-  if(card.gone)el.classList.add('gone');
-  if(opts.selectable)el.classList.add('selectable');
-  if(opts.pendingCard)el.classList.add('pending-card');
-  if(opts.back)el.classList.add('back');
-  if(card.up&&!card.gone){
-    if(card.v<0)el.classList.add('neg');
-    if(card.v>=8)el.classList.add('hi');
-  }
-  el.type='button';
-  el.innerHTML=card.up&&!card.gone?`<span class="mini">${opts.label||''}</span>${card.v}`:'';
-  return el;
+function cleanup(){
+  try{app.conn?.close();}catch{}
+  try{app.peer?.destroy();}catch{}
+  app.conn=null;app.peer=null;app.state=null;app.lastView=null;app.flipMode=false;
+  ui.roomArea.style.display='none';ui.roomCode.value='';
+  ui.peerState.textContent='offline';ui.connState.textContent='–';ui.roleState.textContent='–';
 }
 
-function renderGrid(el,player,isSelf,view){
-  el.innerHTML='';
-  const inSetup=view&&view.phase==='setup';
-  const myTurn=view&&view.phase==='turn'&&view.cur===view.viewer;
-
-  for(let col=0;col<4;col++){
-    const cg=document.createElement('div');cg.className='col-group';
-    const cc=[player.grid[col*3],player.grid[col*3+1],player.grid[col*3+2]];
-    // highlight matched column
-    if(cc.every(x=>x.up&&!x.gone)&&!cc.every(x=>x.gone)&&cc[0].v===cc[1].v&&cc[1].v===cc[2].v)
-      cg.classList.add('matched');
-
-    cc.forEach((card,row)=>{
-      const idx=col*3+row;
-      let selectable=false;
-      if(isSelf&&inSetup&&!card.up&&!card.gone&&view.setupFlips[view.viewer]<2)selectable=true;
-      if(isSelf&&myTurn&&view.pending){
-        if(flipMode&&!card.up&&!card.gone)selectable=true;   // discard-flip mode: only face-down
-        if(!flipMode&&!card.gone)selectable=true;             // swap mode: any active card
-      }
-      const node=mkCard(card,{selectable});
-      node.addEventListener('click',()=>{
-        if(!isSelf)return;
-        if(inSetup&&!card.up&&!card.gone&&view.setupFlips[view.viewer]<2){
-          sendAction({t:'setup-flip',i:idx});render();return;
-        }
-        if(!myTurn||!view.pending)return;
-        if(flipMode){
-          if(!card.up&&!card.gone){sendAction({t:'discard-flip',i:idx});render();}
-        } else {
-          if(!card.gone){sendAction({t:'swap',i:idx});render();}
-        }
-      });
-      cg.appendChild(node);
-    });
-    el.appendChild(cg);
-  }
-}
-
-function renderPile(el,type,view){
-  el.innerHTML='';
-  if(type==='deck'){el.appendChild(mkCard({up:false},{back:true}));return;}
-  if(type==='discard'){
-    const top=view?.discard?.[view.discard.length-1];
-    el.appendChild(top?mkCard(top,{label:'Ablage'}):mkCard({up:false},{back:true}));return;
-  }
-  if(!view?.pending){const ph=document.createElement('div');ph.className='card face-down';ph.style.opacity='.3';el.appendChild(ph);return;}
-  el.appendChild(mkCard(view.pending,{pendingCard:true}));
-}
-
-function render(){
-  const v=app.lastView;
-  ui.roleState.textContent=app.localMode?'lokal':(app.role||'–');
-  ui.connState.textContent=app.localMode?'lokal':(app.conn?.open?'verbunden':'–');
-
-  if(!v){
-    [ui.oppGrid,ui.selfGrid,ui.deckPile,ui.discardPile,ui.pendingPile].forEach(e=>e.innerHTML='');
-    ui.selfName.textContent='Du';ui.oppName.textContent='Gegnerin';
-    ui.deckCount.textContent='–';ui.discardInfo.textContent='–';ui.pendingInfo.textContent='–';
-    ui.selfRoundScore.textContent='?';ui.oppRoundScore.textContent='?';
-    ui.selfTotalScore.textContent='0';ui.oppTotalScore.textContent='0';
-    ui.roundNo.textContent='1';ui.logBox.innerHTML='';
-    ui.statusBox.textContent='Erstelle einen Raum oder verbinde dich.';
-    return;
-  }
-
-  const self=v.players[v.viewer],opp=v.players[1-v.viewer];
-  ui.selfName.textContent=self.name;ui.oppName.textContent=opp.name;
-  ui.selfRoundScore.textContent=self.roundScore;ui.oppRoundScore.textContent=opp.roundScore;
-  ui.selfTotalScore.textContent=self.total;ui.oppTotalScore.textContent=opp.total;
-  ui.roundNo.textContent=v.round||1;
-  ui.deckCount.textContent=`${v.deck.length} Karten`;
-  const discTop=v.discard?.[v.discard.length-1];
-  ui.discardInfo.textContent=discTop?`Oben: ${discTop.v}`:'Leer';
-  ui.pendingInfo.textContent=v.pending?(v.pending.up?`Gezogen: ${v.pending.v}`:'Verdeckt gezogen'):'Noch nichts';
-  ui.oppDot.classList.toggle('active',v.cur===(1-v.viewer));
-  ui.selfDot.classList.toggle('active',v.cur===v.viewer);
-
-  renderPile(ui.deckPile,'deck',v);
-  renderPile(ui.discardPile,'discard',v);
-  renderPile(ui.pendingPile,'pending',v);
-  renderGrid(ui.oppGrid,opp,false,v);
-  renderGrid(ui.selfGrid,self,true,v);
-
-  // Log
-  ui.logBox.innerHTML='';
-  (v.log||[]).forEach(line=>{const d=document.createElement('div');d.className='log-item';d.textContent=line;ui.logBox.appendChild(d);});
-
-  // Discard button state
-  const myTurn=v.phase==='turn'&&v.cur===v.viewer;
-  if(flipMode){
-    ui.discardPendingBtn.textContent='↩ Abbrechen';
-    ui.discardPendingBtn.classList.add('mode-flip');
-  } else {
-    ui.discardPendingBtn.textContent='Abwerfen + aufdecken';
-    ui.discardPendingBtn.classList.remove('mode-flip');
-  }
-
-  // Status
-  let txt='';
-  if(v.phase==='setup'){
-    const left=2-v.setupFlips[v.viewer];
-    txt=left>0?`Decke noch ${left} Startkarte(n) auf.`:'Warte auf die andere Person…';
-  }else if(v.phase==='turn'){
-    if(v.cur!==v.viewer)txt=`${opp.name} ist am Zug…`;
-    else if(!v.pending)txt='Du bist dran: Karte vom Stapel oder Ablage nehmen.';
-    else if(flipMode)txt='Wähle eine verdeckte Karte in deinem Feld (oder Abbrechen).';
-    else txt='Wähle eine Karte zum Tauschen — oder "Abwerfen + aufdecken".';
-  }else if(v.phase==='round-over')txt='Runde beendet! Klicke "Neue Runde".';
-  else if(v.phase==='game-over'){
-    const w=[...v.players].sort((a,b)=>a.total-b.total)[0];
-    txt=`🏆 Spiel vorbei! ${w.name} gewinnt mit ${w.total} Punkten!`;
-  }
-  ui.statusBox.textContent=txt;
-
-  // Button states
-  ui.drawDeckBtn.disabled=!myTurn||!!v.pending;
-  ui.drawDiscardBtn.disabled=!myTurn||!!v.pending||!v.discard?.length;
-  ui.discardPendingBtn.disabled=!myTurn||!v.pending;
-  ui.startBtn.disabled=!(app.localMode||app.role==='host');
-  ui.newRoundBtn.disabled=!(app.localMode||app.role==='host')||!['round-over','game-over'].includes(v.phase);
-}
-
-// ── EVENT LISTENERS ───────────────────────────────────────────────────────────
-ui.drawDeckBtn.addEventListener('click',()=>sendAction({t:'draw-deck'}));
-ui.drawDiscardBtn.addEventListener('click',()=>sendAction({t:'draw-discard'}));
-
-ui.discardPendingBtn.addEventListener('click',()=>{
-  if(!app.lastView?.pending)return;
-  flipMode=!flipMode; // toggle: on = select face-down card, off = cancel
-  render();
-});
-
-ui.startBtn.addEventListener('click',()=>{flipMode=false;sendAction({t:'start'});});
-ui.newRoundBtn.addEventListener('click',()=>{flipMode=false;sendAction({t:'new-round'});});
-ui.resetBtn.addEventListener('click',()=>{flipMode=false;sendAction({t:'reset'});});
-
-ui.joinModeBtn.addEventListener('click',()=>{ui.joinBox.style.display=ui.joinBox.style.display==='none'?'grid':'none';});
-ui.hostBtn.addEventListener('click',()=>{
-  cleanupNetwork();app.localMode=false;app.role='host';app.playerIndex=0;
+function initHost(){
+  cleanup();
+  app.localMode=false;app.role='host';app.playerIndex=0;
   app.hostName=ui.nameInput.value.trim()||'Host';
-  app.peer=new Peer(randomId(6));bindNetwork();
-  ui.peerState.textContent='starte…';ui.roleState.textContent='host';render();
-});
-ui.connectBtn.addEventListener('click',()=>{
-  cleanupNetwork();app.localMode=false;app.role='guest';app.playerIndex=1;
+  app.peer=new Peer(rId(6));
+  bindNetwork();ui.peerState.textContent='starte…';render();
+}
+
+function initJoin(){
+  cleanup();
+  app.localMode=false;app.role='guest';app.playerIndex=1;
   app.guestName=ui.nameInput.value.trim()||'Gast';
-  app.peer=new Peer(randomId(6));
+  app.peer=new Peer(rId(6));
   app.peer.on('open',()=>{
-    ui.peerState.textContent='bereit';ui.roleState.textContent='gast';
-    const conn=app.peer.connect(ui.roomInput.value.trim());
+    ui.peerState.textContent='bereit';
+    const code=ui.roomInput.value.trim();
+    if(!code)return;
+    const conn=app.peer.connect(code);
     app.conn=conn;
-    conn.on('open',()=>{ui.connState.textContent='verbunden';conn.send({t:'set-name',name:app.guestName});});
+    conn.on('open',()=>{ui.connState.textContent='verbunden';conn.send({type:'set-name',name:app.guestName});});
     conn.on('data',msg=>{
-      if(msg.t==='hello')app.playerIndex=msg.playerIdx;
-      if(msg.t==='state'){app.lastView=msg.view;render();}
+      if(msg.type==='hello')app.playerIndex=msg.playerIndex;
+      if(msg.type==='state'){app.lastView=msg.view;app.flipMode=false;render();}
     });
     conn.on('close',()=>ui.connState.textContent='getrennt');
   });
   render();
+}
+
+function initLocal(){
+  cleanup();
+  app.localMode=true;app.role='host';app.playerIndex=0;
+  app.hostName=ui.nameInput.value.trim()||'Du';
+  app.guestName='Deine Freundin';
+  ui.peerState.textContent='lokal';
+  render();
+}
+
+// Events
+ui.joinModeBtn.addEventListener('click',()=>{
+  ui.joinBox.style.display=ui.joinBox.style.display==='none'?'grid':'none';
 });
-ui.localBtn.addEventListener('click',()=>{
-  cleanupNetwork();app.localMode=true;app.role='host';app.playerIndex=0;
-  app.hostName=ui.nameInput.value.trim()||'Du';app.guestName='Freundin';
-  app.state=newRound([0,0]);syncNames();
-  app.lastView=viewFor(app.state,0);
-  ui.peerState.textContent='lokal';ui.roleState.textContent='lokal';render();
-});
+ui.hostBtn.addEventListener('click',initHost);
+ui.connectBtn.addEventListener('click',initJoin);
+ui.localBtn.addEventListener('click',initLocal);
 ui.copyBtn.addEventListener('click',async()=>{
-  try{await navigator.clipboard.writeText(ui.roomCode.value);ui.copyBtn.textContent='Kopiert!';setTimeout(()=>ui.copyBtn.textContent='Kopieren',1500);}catch{}
+  try{await navigator.clipboard.writeText(ui.roomCode.value);ui.copyBtn.textContent='✓ Kopiert';setTimeout(()=>ui.copyBtn.textContent='Kopieren',1400);}
+  catch{ui.copyBtn.textContent='Fehler';}
 });
+
+ui.startBtn.addEventListener('click',()=>{app.flipMode=false;sendAction({type:'start'});});
+ui.newRoundBtn.addEventListener('click',()=>{app.flipMode=false;sendAction({type:'new-round'});});
+ui.resetBtn.addEventListener('click',()=>{app.flipMode=false;sendAction({type:'reset'});});
+ui.drawDeckBtn.addEventListener('click',()=>sendAction({type:'draw-deck'}));
+ui.drawDiscardBtn.addEventListener('click',()=>sendAction({type:'draw-discard'}));
+
+ui.discardPendingBtn.addEventListener('click',()=>{
+  app.flipMode=true;
+  render(); // show hint
+});
+
 ui.nameInput.addEventListener('change',()=>{
-  const n=ui.nameInput.value.trim()||'Spieler';
-  if(app.localMode){app.hostName=n;if(app.state){syncNames();app.lastView=viewFor(app.state,0);render();}return;}
-  if(!app.role)return;
-  if(app.role==='host'){app.hostName=n;if(app.state)doAction({t:'set-name',name:n},0);}
-  else if(app.conn?.open){app.guestName=n;app.conn.send({t:'set-name',name:n});}
+  const name=ui.nameInput.value.trim()||'Spieler';
+  if(app.localMode){app.hostName=name;syncNames();if(app.state){app.lastView=privateViewFor(0);}render();return;}
+  if(app.role==='host'){app.hostName=name;if(app.state)hostAction({type:'set-name',name},0);}
+  else if(app.role==='guest'&&app.conn?.open){app.guestName=name;app.conn.send({type:'set-name',name});}
 });
+
 ui.themeBtn.addEventListener('click',()=>{
-  const r=document.documentElement;r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark');
+  const root=document.documentElement;
+  const dark=root.getAttribute('data-theme')==='dark';
+  root.setAttribute('data-theme',dark?'light':'dark');
+  ui.themeBtn.textContent=dark?'🌙':'☀️';
 });
+
+ui.rulesBtn.addEventListener('click',()=>ui.rulesModal.style.display='flex');
+ui.closeRules.addEventListener('click',()=>ui.rulesModal.style.display='none');
+ui.rulesModal.addEventListener('click',e=>{if(e.target===ui.rulesModal)ui.rulesModal.style.display='none';});
 
 render();
 </script>
