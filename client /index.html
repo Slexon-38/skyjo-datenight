@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="theme-color" content="#171614"/>
+<title>Skyjo Date Night</title>
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&f[]=zodiak@400,700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#171614;--surf:#1e1d1b;--s2:#272522;--s3:#2f2e2b;--line:#3d3b37;--text:#ede9e0;--muted:#9e9890;--faint:#5e5c56;--pri:#4fa8b5;--pri2:#2b6e79;--acc:#e8af34;--err:#e06070;--ok:#72b85a;--r:20px;--sh:0 8px 32px rgba(0,0,0,.4);--font:'Satoshi',system-ui,sans-serif;--disp:'Zodiak',Georgia,serif}
+[data-theme=light]{--bg:#f5f3ee;--surf:#fafaf7;--s2:#f0ede7;--s3:#e9e5dd;--line:#d0ccc4;--text:#28251e;--muted:#726d64;--faint:#b0ac9e;--pri:#01696f;--pri2:#0e4e53;--acc:#c68c00;--err:#b03545;--ok:#3d7020;--sh:0 8px 32px rgba(0,0,0,.08)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;-webkit-tap-highlight-color:transparent}
+body{font-family:var(--font);color:var(--text);background:radial-gradient(ellipse at 0% 0%,rgba(79,168,181,.18) 0,transparent 50%),radial-gradient(ellipse at 100% 100%,rgba(232,175,52,.14) 0,transparent 50%),var(--bg);padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;border:0;transition:.14s ease}
+button:active{transform:scale(.93);opacity:.85}
+button:disabled{opacity:.35;pointer-events:none}
+.app{display:flex;flex-direction:column;min-height:100dvh}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;gap:10px;background:color-mix(in srgb,var(--surf) 92%,transparent);border-bottom:1px solid var(--line);backdrop-filter:blur(20px);position:sticky;top:0;z-index:300;flex-shrink:0}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(145deg,var(--pri),var(--pri2));color:#fff;flex:none}
+.brand h1{font-family:var(--disp);font-size:1.18rem;line-height:1;letter-spacing:-.01em}
+.tbtn{min-height:38px;padding:0 12px;border-radius:999px;background:var(--s2);border:1px solid var(--line);font-size:.85rem}
+.tabs{display:flex;background:var(--surf);border-bottom:1px solid var(--line);flex-shrink:0}
+.tab{flex:1;padding:11px 6px;font-size:.88rem;font-weight:600;color:var(--muted);background:none;border:0;border-bottom:3px solid transparent;cursor:pointer}
+.tab.on{color:var(--pri);border-bottom-color:var(--pri)}
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.pane{display:none;flex-direction:column;gap:14px;padding:16px}
+.pane.on{display:flex}
+.panel{background:color-mix(in srgb,var(--surf) 88%,transparent);border:1px solid var(--line);border-radius:var(--r);padding:16px;box-shadow:var(--sh)}
+.panel>h3{font-size:.9rem;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px;color:var(--muted)}
+.col{display:flex;flex-direction:column;gap:10px}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.lbl{display:flex;flex-direction:column;gap:5px}
+.lbl>span{font-size:.82rem;color:var(--muted)}
+.inp{min-height:48px;border-radius:14px;border:1px solid var(--line);background:var(--s2);color:var(--text);padding:0 14px;outline:none;font-size:1rem;width:100%}
+.inp:focus{border-color:var(--pri);box-shadow:0 0 0 3px color-mix(in srgb,var(--pri) 18%,transparent)}
+.btn{min-height:48px;border-radius:999px;padding:0 20px;font-size:.9rem;font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.p{background:var(--pri);color:#fff}.g{background:var(--s2);color:var(--text);border:1px solid var(--line)}.d{background:var(--err);color:#fff}
+.sm{min-height:40px;padding:0 14px;font-size:.83rem}.full{width:100%}
+.badges{display:flex;gap:8px;flex-wrap:wrap}
+.bdg{padding:5px 11px;border-radius:999px;background:var(--s2);border:1px solid var(--line);color:var(--muted);font-size:.8rem;display:flex;align-items:center;gap:5px}
+.bdg b{color:var(--text)}.bdg .dot2{width:7px;height:7px;border-radius:999px;background:var(--faint)}
+.bdg.ok{border-color:color-mix(in srgb,var(--ok) 40%,transparent)}.bdg.ok b,.bdg.ok .dot2{color:var(--ok);background:var(--ok)}
+.bdg.warn{border-color:color-mix(in srgb,var(--acc) 40%,transparent)}.bdg.warn b,.bdg.warn .dot2{color:var(--acc);background:var(--acc)}
+.bdg.err{border-color:color-mix(in srgb,var(--err) 40%,transparent)}.bdg.err b,.bdg.err .dot2{color:var(--err);background:var(--err)}
+.status{padding:14px 16px;border-radius:16px;background:var(--s2);border:1px solid var(--line);line-height:1.55;font-size:.92rem}
+.status.sweet{background:color-mix(in srgb,var(--acc) 12%,var(--surf));border-color:var(--acc);font-weight:600;font-size:1rem}
+.log-wrap{border-radius:14px;border:1px solid var(--line);background:var(--s2);max-height:260px;overflow-y:auto}
+.ll{display:flex;gap:10px;padding:9px 13px;border-bottom:1px solid var(--line);align-items:flex-start}
+.ll:last-child{border-bottom:0}
+.ll-dot{width:7px;height:7px;border-radius:999px;flex:none;margin-top:5px;background:var(--faint)}
+.ll-dot.ok{background:var(--ok)}.ll-dot.warn{background:var(--acc)}.ll-dot.err{background:var(--err)}.ll-dot.info{background:var(--pri)}.ll-dot.game{background:#c084fc}
+.ll-t{font-size:.83rem;color:var(--muted);flex:1;line-height:1.45}
+.ll-time{font-size:.72rem;color:var(--faint);flex:none;margin-top:2px;font-variant-numeric:tabular-nums}
+.div{height:1px;background:var(--line);flex-shrink:0}
+.psec{border-radius:22px;background:color-mix(in srgb,var(--surf) 88%,transparent);border:2px solid var(--line);padding:14px;box-shadow:var(--sh)}
+.psec.me{border-color:var(--pri);box-shadow:0 0 0 1px color-mix(in srgb,var(--pri) 30%,transparent),var(--sh)}
+.ph{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:8px;flex-wrap:wrap}
+.pname{display:flex;align-items:center;gap:8px;font-weight:700;font-size:1rem}
+.pdot{width:10px;height:10px;border-radius:999px;background:var(--faint);flex:none}
+.pdot.me{background:var(--pri)}.pdot.active{background:var(--acc);box-shadow:0 0 0 4px color-mix(in srgb,var(--acc) 22%,transparent)}
+.me-tag{font-size:.75rem;font-weight:700;padding:2px 9px;border-radius:999px;background:color-mix(in srgb,var(--pri) 14%,transparent);border:1px solid color-mix(in srgb,var(--pri) 28%,transparent);color:var(--pri)}
+.pstats{display:flex;gap:10px;font-size:.84rem;color:var(--muted)}.pstats b{color:var(--text)}
+.cgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:100%}
+.c{position:relative;width:100%;padding-top:142%;border-radius:13px;border:1px solid var(--line);background:linear-gradient(150deg,var(--s3),var(--s2));overflow:hidden;cursor:default;transition:.13s ease}
+.c-inner{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:clamp(.9rem,3.5vw,1.3rem);color:var(--text)}
+.c.fd{background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--pri) 30%,transparent) 0 9px,color-mix(in srgb,var(--acc) 22%,transparent) 9px 18px),var(--s3)}
+.c.fd .c-inner{color:transparent}
+.c.tap{cursor:pointer;box-shadow:0 0 0 2.5px var(--pri),0 0 16px color-mix(in srgb,var(--pri) 25%,transparent)}
+.c.tap:active{transform:scale(.88)}
+.c.neg .c-inner{color:var(--ok)}.c.hi .c-inner{color:var(--err)}
+.c .mini{position:absolute;top:5px;left:7px;font-size:.58rem;color:var(--faint);font-weight:600}
+.c.bk .c-inner::after{content:"Skyjo";font-family:var(--disp);font-size:.7rem;letter-spacing:.06em;color:rgba(255,255,255,.75);transform:rotate(-10deg);display:block}
+.prow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.pile{background:var(--s2);border:1px solid var(--line);border-radius:16px;padding:12px 8px 14px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.pile h4{font-size:.78rem;color:var(--muted);font-weight:600;margin:0}.pile p{font-size:.75rem;color:var(--muted);margin:0}
+.pile-preview{width:52px;height:72px;border-radius:10px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1rem;background:linear-gradient(150deg,var(--s3),var(--s2));flex-shrink:0}
+.pile-preview.fd{background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--pri) 30%,transparent) 0 8px,color-mix(in srgb,var(--acc) 22%,transparent) 8px 16px),var(--s3);color:transparent}
+.pile-preview.fd::after{content:"Skyjo";font-family:var(--disp);color:rgba(255,255,255,.75);font-size:.62rem;transform:rotate(-8deg);display:block}
+.pile-preview.neg{color:var(--ok)}.pile-preview.hi{color:var(--err)}
+.pbtn{min-height:38px;border-radius:999px;padding:0 14px;font-size:.8rem;font-weight:600}
+.overlay{position:fixed;inset:0;z-index:500;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(12px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;text-align:center}
+.overlay.hidden{display:none}
+.overlay h2{font-family:var(--disp);font-size:1.8rem}
+.overlay p{color:var(--muted);max-width:34ch;line-height:1.6}
+@media(min-width:860px){
+  .tabs{display:none}
+  .pane{display:flex!important}
+  .scroll{overflow:visible}
+  .wrap{display:grid;grid-template-columns:320px 1fr;gap:18px;padding:18px;align-items:start}
+  .left-col,.right-col{display:flex;flex-direction:column;gap:14px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- OVERLAY LOGIN -->
+<div class="overlay" id="overlay">
+  <div class="logo" style="width:60px;height:60px;border-radius:18px">
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+      <rect x="4" y="5" width="10" height="14" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <rect x="10" y="3" width="10" height="14" rx="2.5" stroke="currentColor" stroke-width="1.8" opacity=".8"/>
+    </svg>
+  </div>
+  <h2>Skyjo Date Night ❤️</h2>
+  <p>Wähle wer du bist — danach verbindet ihr euch automatisch über euren Server.</p>
+  <div class="col" style="width:100%;max-width:320px">
+    <div class="lbl"><span>Dein Name</span><input class="inp" id="overlayName" maxlength="22" placeholder="z. B. Simi"/></div>
+    <div class="lbl"><span>Wer bist du?</span>
+      <div class="row">
+        <button class="btn p" style="flex:1" id="btnHost">🏠 Simi</button>
+        <button class="btn g" style="flex:1" id="btnGuest">✈️ Lol</button>
+      </div>
+    </div>
+    <div class="div"></div>
+    <div class="lbl"><span>⚙️ Server-URL</span><input class="inp" id="serverUrlInput" placeholder="wss://skyjo-datenight.onrender.com"/></div>
+    <p style="font-size:.78rem;color:var(--muted);text-align:left">Server-URL: die Adresse deines Render-Servers (einmalig einstellen)</p>
+  </div>
+</div>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <rect x="4" y="5" width="10" height="14" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+        <rect x="10" y="3" width="10" height="14" rx="2.5" stroke="currentColor" stroke-width="1.8" opacity=".8"/>
+      </svg>
+    </div>
+    <h1>Skyjo Date Night ❤️</h1>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center">
+    <div class="bdg err" id="connBadge"><span class="dot2"></span><b>offline</b></div>
+    <button class="tbtn" id="themeBtn">🌙/☀️</button>
+  </div>
+</header>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab on" data-t="pane-connect">⚙️ Status</button>
+  <button class="tab" data-t="pane-game">🃏 Spiel</button>
+</div>
+
+<div class="scroll">
+  <div class="wrap">
+
+    <div class="left-col">
+      <div class="pane on" id="pane-connect">
+
+        <div class="panel col">
+          <h3>👤 Verbindung</h3>
+          <div class="badges">
+            <div class="bdg err" id="b-ws"><span class="dot2"></span>WebSocket: <b>offline</b></div>
+            <div class="bdg" id="b-role"><span class="dot2"></span>Rolle: <b>–</b></div>
+          </div>
+          <div class="div"></div>
+          <div class="row">
+            <button class="btn g sm" id="reconnectBtn">🔄 Neu verbinden</button>
+            <button class="btn d sm" id="logoutBtn">Abmelden</button>
+          </div>
+        </div>
+
+        <div class="panel col">
+          <h3>🎮 Steuerung</h3>
+          <div class="row">
+            <button class="btn p" id="startBtn">▶ Starten</button>
+            <button class="btn g" id="newRoundBtn">🔄 Neue Runde</button>
+            <button class="btn d sm" id="resetBtn">✕</button>
+          </div>
+          <div class="status" id="statusBox">Wähle deinen Spieler oben.</div>
+        </div>
+
+        <div class="panel col">
+          <h3>📡 Live-Log</h3>
+          <div class="log-wrap" id="logWrap"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="right-col">
+      <div class="pane" id="pane-game">
+
+        <div class="status" id="statusGame">Verbinde zuerst im Status-Tab.</div>
+
+        <div class="panel">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+            <h3 style="margin:0">🃏 Tisch</h3>
+            <span style="font-size:.84rem;color:var(--muted)">Runde <b id="roundNo" style="color:var(--text)">–</b></span>
+          </div>
+          <div class="prow">
+            <div class="pile">
+              <h4>Nachziehstapel</h4>
+              <div id="deckPile"></div>
+              <button class="btn p pbtn" id="drawDeckBtn">Ziehen</button>
+              <p id="deckCount">–</p>
+            </div>
+            <div class="pile">
+              <h4>Ablage</h4>
+              <div id="discardPile"></div>
+              <button class="btn g pbtn" id="drawDiscardBtn">Nehmen</button>
+              <p id="discardInfo">–</p>
+            </div>
+            <div class="pile">
+              <h4>Gezogen</h4>
+              <div id="pendingPile"></div>
+              <button class="btn g pbtn" id="pendingBtn">Abwerfen ↙</button>
+              <p id="pendingInfo">–</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="psec me">
+          <div class="ph">
+            <div class="pname"><span class="pdot me" id="selfDot"></span><span id="selfName">Ich</span><span class="me-tag">Ich</span></div>
+            <div class="pstats"><span>Runde: <b id="selfRound">?</b></span><span>Gesamt: <b id="selfTotal">0</b></span></div>
+          </div>
+          <div class="cgrid" id="selfGrid"></div>
+        </div>
+
+        <div class="psec">
+          <div class="ph">
+            <div class="pname"><span class="pdot" id="oppDot"></span><span id="oppName">Gegner</span></div>
+            <div class="pstats"><span>Runde: <b id="oppRound">?</b></span><span>Gesamt: <b id="oppTotal">0</b></span></div>
+          </div>
+          <div class="cgrid" id="oppGrid"></div>
+        </div>
+
+        <div class="panel col">
+          <h3>📋 Spiellog</h3>
+          <div class="log-wrap" id="gameLogWrap"></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// KONFIGURATION — HIER ANPASSEN!
+// ═══════════════════════════════════════
+const SECRETS = ['GEHEIM_SIMI', 'GEHEIM_LOL'];
+// Spieler 0 = Simi (Host), Spieler 1 = Lol (Gast)
+// Passworte müssen identisch mit denen im server/index.js sein
+
+const G = { ws:null, myIdx:null, myName:'', view:null, pendingMode:'swap', serverUrl:'', reconnTimer:null };
+
+// ═══════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════
+const $=s=>document.querySelector(s);
+function now(){const d=new Date();return[d.getHours(),d.getMinutes(),d.getSeconds()].map(x=>String(x).padStart(2,'0')).join(':')}
+
+function addLog(text,type='info'){
+  [$('#logWrap'),$('#gameLogWrap')].forEach(w=>{
+    if(!w)return;
+    const e=document.createElement('div');e.className='ll';
+    e.innerHTML=`<div class="ll-dot ${type}"></div><div class="ll-t">${text}</div><div class="ll-time">${now()}</div>`;
+    w.insertBefore(e,w.firstChild);
+    while(w.children.length>80)w.removeChild(w.lastChild);
+  });
+}
+
+function setStatus(text,sweet=false){
+  [$('#statusBox'),$('#statusGame')].forEach(el=>{
+    if(!el)return;el.textContent=text;el.classList.toggle('sweet',sweet);
+  });
+}
+
+function setBadge(id,label,val,type=''){
+  const el=$(id);if(!el)return;
+  el.innerHTML=`<span class="dot2"></span>${label}: <b>${val}</b>`;
+  el.className='bdg'+(type?' '+type:'');
+}
+
+function setConnBadge(online){
+  const b=$('#connBadge');
+  if(online){b.innerHTML='<span class="dot2" style="background:var(--ok)"></span><b style="color:var(--ok)">online</b>';b.className='bdg ok';}
+  else{b.innerHTML='<span class="dot2" style="background:var(--err)"></span><b style="color:var(--err)">offline</b>';b.className='bdg err';}
+}
+
+function goGame(){
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('.pane').forEach(x=>x.classList.remove('on'));
+  $('[data-t="pane-game"]')?.classList.add('on');
+  $('#pane-game').classList.add('on');
+  window.scrollTo(0,0);
+}
+
+// ═══════════════════════════════════════
+// OVERLAY / LOGIN
+// ═══════════════════════════════════════
+$('#btnHost').addEventListener('click',()=>startAs(0));
+$('#btnGuest').addEventListener('click',()=>startAs(1));
+
+function startAs(idx){
+  const name=$('#overlayName').value.trim()||(idx===0?'Simi':'Lol');
+  const url=$('#serverUrlInput').value.trim();
+  if(!url){alert('Bitte Server-URL eingeben!');return;}
+  G.myIdx=idx;G.myName=name;G.serverUrl=url;
+  $('#overlay').classList.add('hidden');
+  setBadge('#b-role','Rolle',idx===0?'🏠 Spieler 1 (Simi)':'✈️ Spieler 2 (Lol)','ok');
+  addLog(`Willkommen ${name}! Verbinde...`,'info');
+  connect();
+}
+
+$('#logoutBtn').addEventListener('click',()=>{
+  cleanup();G.myIdx=null;G.myName='';G.view=null;
+  $('#overlay').classList.remove('hidden');
+  setConnBadge(false);addLog('Abgemeldet.','warn');
+});
+
+// ═══════════════════════════════════════
+// WEBSOCKET
+// ═══════════════════════════════════════
+function connect(){
+  if(!G.serverUrl||G.myIdx===null)return;
+  cleanup();
+  const url=`${G.serverUrl}?player=${G.myIdx}&secret=${encodeURIComponent(SECRETS[G.myIdx])}`;
+  addLog(`Verbinde: ${G.serverUrl}`,'info');
+  let ws;
+  try{ws=new WebSocket(url);}
+  catch(e){addLog(`Fehler: ${e.message}`,'err');scheduleReconn();return;}
+  G.ws=ws;
+
+  ws.onopen=()=>{
+    addLog('Verbunden mit Server!','ok');
+    setBadge('#b-ws','WebSocket','verbunden','ok');
+    setConnBadge(true);
+    ws.send(JSON.stringify({t:'name',name:G.myName}));
+    addLog(`Name "${G.myName}" gesendet.`,'info');
+  };
+
+  ws.onmessage=e=>{
+    let msg;try{msg=JSON.parse(e.data);}catch{return;}
+    if(msg.t==='hello'){addLog(`Server: Spieler ${msg.playerIdx+1} – willkommen!`,'ok');}
+    if(msg.t==='error'){addLog(`Server-Fehler: ${msg.msg}`,'err');}
+    if(msg.t==='state'){
+      addLog(`State: Phase="${msg.view?.phase}", Viewer=${msg.view?.viewer}, Spieler=${JSON.stringify(msg.view?.players?.map(p=>({id:p.id,n:p.name})))}`,'info');
+      G.view=msg.view;
+      render();
+      if(msg.view?.phase&&msg.view.phase!=='waiting'){
+        if(!$('[data-t="pane-game"]')?.classList.contains('on'))goGame();
+      }
+    }
+  };
+
+  ws.onclose=e=>{
+    addLog(`Verbindung getrennt (${e.code}).`,'err');
+    setBadge('#b-ws','WebSocket','getrennt','err');
+    setConnBadge(false);G.ws=null;scheduleReconn();
+  };
+
+  ws.onerror=()=>addLog('WebSocket-Fehler','err');
+}
+
+function scheduleReconn(){
+  clearTimeout(G.reconnTimer);
+  if(G.myIdx===null)return;
+  addLog('Reconnect in 5s...','warn');
+  G.reconnTimer=setTimeout(connect,5000);
+}
+
+function cleanup(){
+  clearTimeout(G.reconnTimer);
+  try{G.ws?.close();}catch{}
+  G.ws=null;
+}
+
+function send(obj){
+  if(G.ws?.readyState===WebSocket.OPEN){G.ws.send(JSON.stringify(obj));}
+  else{addLog('Nicht verbunden!','err');}
+}
+
+// ═══════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════
+function mkCard(card,opts={}){
+  const wrap=document.createElement('div');
+  const up=card.up&&typeof card.v==='number';
+  wrap.className='c'+(card.up?'':(opts.bk?' bk fd':' fd'));
+  if(opts.tap)wrap.classList.add('tap');
+  if(up&&card.v<0)wrap.classList.add('neg');
+  if(up&&card.v>=8)wrap.classList.add('hi');
+  const inner=document.createElement('div');inner.className='c-inner';
+  if(up)inner.innerHTML=`<span class="mini"></span>${card.v}`;
+  wrap.appendChild(inner);return wrap;
+}
+
+function mkPP(card,opts={}){
+  const d=document.createElement('div');
+  const up=card.up&&typeof card.v==='number';
+  d.className='pile-preview'+(card.up?'':' fd')+(opts.bk?' fd':'');
+  if(up){if(card.v<0)d.classList.add('neg');if(card.v>=8)d.classList.add('hi');d.textContent=card.v;}
+  return d;
+}
+
+function renderGrid(el,player,isSelf,view){
+  el.innerHTML='';
+  const canAct=view.phase==='turn'&&view.cur===view.viewer;
+  const setup=view.phase==='setup';
+  const flips=view.flips||[0,0];
+  for(let i=0;i<12;i++){
+    const card=player.grid[i]||{v:null,up:false};
+    let tap=false;
+    if(isSelf&&setup&&!card.up&&flips[view.viewer]<2)tap=true;
+    if(isSelf&&canAct&&view.pending){tap=G.pendingMode==='flip'?!card.up:true;}
+    const node=mkCard(card,{tap});
+    if(tap){
+      (idx=>{
+        node.addEventListener('click',()=>{
+          if(!isSelf)return;
+          if(setup&&flips[view.viewer]<2&&!card.up){send({t:'flip-setup',i:idx});return;}
+          if(!canAct||!view.pending)return;
+          if(G.pendingMode==='flip'){if(!card.up)send({t:'discard-flip',i:idx});}
+          else send({t:'swap',i:idx});
+        });
+      })(i);
+    }
+    el.appendChild(node);
+  }
+}
+
+function renderPile(el,type,view){
+  el.innerHTML='';
+  if(type==='deck')el.appendChild(mkPP({up:false},{bk:true}));
+  else if(type==='discard'){const t=view.discard?.[view.discard.length-1];el.appendChild(t?mkPP(t):mkPP({up:false},{bk:true}));}
+  else if(type==='pending')el.appendChild(view.pending?mkPP(view.pending):mkPP({up:false}));
+}
+
+function render(){
+  const view=G.view;
+  G.pendingMode='swap';
+  if(!view){
+    ['selfGrid','oppGrid','deckPile','discardPile','pendingPile'].forEach(id=>{const e=$(('#'+id));if(e)e.innerHTML='';});
+    return;
+  }
+
+  // KRITISCH: viewer ist die Player-ID (0 oder 1), nicht Array-Index
+  const self=view.players?.find(p=>p.id===view.viewer);
+  const opp=view.players?.find(p=>p.id!==view.viewer);
+
+  if(!self||!opp){
+    addLog(`RENDER-FEHLER: viewer=${view.viewer}, gefundene IDs: ${view.players?.map(p=>p.id).join(',')}`,'err');
+    return;
+  }
+
+  $('#selfName').textContent=self.name;
+  $('#oppName').textContent=opp.name;
+  $('#selfRound').textContent=self.roundScore??'?';
+  $('#oppRound').textContent=opp.roundScore??'?';
+  $('#selfTotal').textContent=self.total??0;
+  $('#oppTotal').textContent=opp.total??0;
+  $('#roundNo').textContent=view.round??'–';
+  $('#deckCount').textContent=`${view.deck?.length??0} Karten`;
+  const dt=view.discard?.[view.discard.length-1];
+  $('#discardInfo').textContent=dt?`Oben: ${dt.v}`:'Leer';
+  $('#pendingInfo').textContent=view.pending?(view.pending.up?`Wert: ${view.pending.v}`:'Verdeckt'):'–';
+
+  $('#selfDot').classList.toggle('active',view.cur===view.viewer);
+  $('#oppDot').classList.toggle('active',view.cur!==view.viewer);
+
+  renderPile($('#deckPile'),'deck',view);
+  renderPile($('#discardPile'),'discard',view);
+  renderPile($('#pendingPile'),'pending',view);
+  renderGrid($('#selfGrid'),self,true,view);
+  renderGrid($('#oppGrid'),opp,false,view);
+
+  const canT=view.phase==='turn'&&view.cur===view.viewer;
+  $('#drawDeckBtn').disabled=!canT||!!view.pending;
+  $('#drawDiscardBtn').disabled=!canT||!!view.pending||!view.discard?.length;
+  $('#pendingBtn').disabled=!canT||!view.pending;
+  $('#newRoundBtn').disabled=!['round-over','game-over'].includes(view.phase);
+
+  const gw=$('#gameLogWrap');gw.innerHTML='';
+  (view.log||[]).forEach(line=>{const e=document.createElement('div');e.className='ll';e.innerHTML=`<div class="ll-dot game"></div><div class="ll-t">${line}</div>`;gw.appendChild(e);});
+
+  let txt='',sweet=false;
+  const flips=view.flips||[0,0];
+  if(view.phase==='setup'){const l=2-flips[view.viewer];txt=l>0?`Tippe auf ${l} deiner Karten zum Aufdecken!`:`Warte auf ${opp.name}...`;}
+  else if(view.phase==='turn'){
+    if(view.cur!==view.viewer)txt=`${opp.name} ist am Zug...`;
+    else if(!view.pending)txt='Du bist dran! Ziehe vom Stapel oder nimm die Ablage.';
+    else txt='Tippe eine Karte zum Tauschen — oder "Abwerfen ↙" und dann eine verdeckte Karte antippen.';
+  }else if(view.phase==='round-over'){txt='Runde beendet! Klicke "Neue Runde".';}
+  else if(view.phase==='game-over'){
+    const s=[...view.players].sort((a,b)=>a.total-b.total);sweet=true;
+    txt=s[0].id===view.viewer?`Du hast gewonnen! 🎉 ${s[0].total} Punkte! ❤️`:`${s[0].name} gewinnt mit ${s[0].total} Punkten! Gut gespielt! 🥂`;
+  }else if(view.phase==='waiting'){txt=`Warte auf ${opp.name}...`;}
+  setStatus(txt,sweet);
+}
+
+// ═══════════════════════════════════════
+// UI EVENTS
+// ═══════════════════════════════════════
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+    document.querySelectorAll('.pane').forEach(x=>x.classList.remove('on'));
+    t.classList.add('on');$(('#'+t.dataset.t)).classList.add('on');
+  });
+});
+
+$('#reconnectBtn').addEventListener('click',()=>{clearTimeout(G.reconnTimer);if(G.myIdx===null){$('#overlay').classList.remove('hidden');return;}connect();});
+$('#startBtn').addEventListener('click',()=>send({t:'start'}));
+$('#newRoundBtn').addEventListener('click',()=>send({t:'new-round'}));
+$('#resetBtn').addEventListener('click',()=>{if(confirm('Wirklich zurücksetzen?'))send({t:'reset'});});
+$('#drawDeckBtn').addEventListener('click',()=>send({t:'draw-deck'}));
+$('#drawDiscardBtn').addEventListener('click',()=>send({t:'draw-discard'}));
+$('#pendingBtn').addEventListener('click',()=>{
+  if(!G.view?.pending)return;
+  G.pendingMode='flip';
+  setStatus('Tippe jetzt eine VERDECKTE Karte in deinem Feld!');
+  addLog('Abwerfen-Modus: wähle verdeckte Karte.','warn');
+});
+$('#themeBtn').addEventListener('click',()=>{const r=document.documentElement;r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark');});
+
+addLog('App geladen. Wähle deinen Spieler!','info');
+render();
+</script>
+</body>
+</html>
