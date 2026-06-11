@@ -10,7 +10,6 @@
   --bg:#f7f6f2;--surface:#fbfbf9;--surface-2:#f2efe9;--line:#d7d1c7;
   --text:#25221d;--muted:#6f6a63;--primary:#01696f;--primary-2:#0e4e53;
   --accent:#d19900;--danger:#b43a4d;--good:#437a22;
-  --radius:22px;--radius-sm:14px;
   --shadow:0 20px 50px rgba(26,24,20,.10);
   --font-body:'Satoshi',system-ui,sans-serif;
   --font-display:'Zodiak',Georgia,serif;
@@ -23,29 +22,16 @@
 }
 *{box-sizing:border-box;}
 html,body{margin:0;min-height:100%;}
-body{
-  font-family:var(--font-body);
-  background:
-    radial-gradient(circle at top left,rgba(79,152,163,.14),transparent 30%),
-    radial-gradient(circle at bottom right,rgba(209,153,0,.12),transparent 28%),
-    var(--bg);
-  color:var(--text);
-}
+body{font-family:var(--font-body);background:radial-gradient(circle at top left,rgba(79,152,163,.14),transparent 30%),radial-gradient(circle at bottom right,rgba(209,153,0,.12),transparent 28%),var(--bg);color:var(--text);}
 button,input{font:inherit;}
 button{cursor:pointer;border:0;transition:.18s ease;}
 button:hover{transform:translateY(-1px);}
 button:disabled{opacity:.45;cursor:not-allowed;transform:none;}
 .app{max-width:1300px;margin:0 auto;padding:20px;display:grid;gap:18px;}
-.topbar,.panel{
-  background:color-mix(in srgb,var(--surface) 88%,transparent);
-  border:1px solid var(--line);border-radius:var(--radius);
-  box-shadow:var(--shadow);backdrop-filter:blur(18px);
-}
+.topbar,.panel{background:color-mix(in srgb,var(--surface) 88%,transparent);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);backdrop-filter:blur(18px);}
 .topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 20px;flex-wrap:wrap;}
 .brand{display:flex;align-items:center;gap:14px;}
-.logo{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;
-  background:linear-gradient(160deg,var(--primary),var(--primary-2));color:#fff;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.22);flex:none;}
+.logo{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(160deg,var(--primary),var(--primary-2));color:#fff;flex:none;}
 .brand h1{margin:0;font-family:var(--font-display);font-size:clamp(1.5rem,3vw,2.4rem);line-height:1;letter-spacing:-.02em;}
 .brand p{margin:4px 0 0;color:var(--muted);font-size:.95rem;}
 .theme-btn,.ghost,.primary,.danger,.soft{border-radius:999px;padding:11px 16px;min-height:44px;}
@@ -55,78 +41,54 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none;}
 .layout{display:grid;grid-template-columns:340px 1fr;gap:18px;}
 .panel{padding:18px;}
 .panel h2,.panel h3{margin:0 0 12px;font-size:1rem;letter-spacing:.02em;}
-.meta{display:grid;gap:10px;}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
 .stack{display:grid;gap:10px;}
 .field{display:grid;gap:8px;}
 .field label{font-size:.92rem;color:var(--muted);}
-.field input{min-height:48px;border-radius:16px;border:1px solid var(--line);
-  background:var(--surface-2);color:var(--text);padding:0 14px;outline:none;}
+.field input{min-height:48px;border-radius:16px;border:1px solid var(--line);background:var(--surface-2);color:var(--text);padding:0 14px;outline:none;}
 .field input:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(79,152,163,.15);}
 .badge-row{display:flex;gap:10px;flex-wrap:wrap;}
-.badge{padding:8px 12px;border-radius:999px;background:var(--surface-2);
-  border:1px solid var(--line);color:var(--muted);font-size:.88rem;}
+.badge{padding:8px 12px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line);color:var(--muted);font-size:.88rem;}
 .badge strong{color:var(--text);}
 .board{display:grid;gap:18px;}
-.player-section{padding:18px;border-radius:28px;
-  background:color-mix(in srgb,var(--surface) 90%,transparent);
-  border:1px solid var(--line);box-shadow:var(--shadow);}
+.player-section{padding:18px;border-radius:28px;background:color-mix(in srgb,var(--surface) 90%,transparent);border:1px solid var(--line);box-shadow:var(--shadow);}
 .player-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap;}
 .player-name{display:flex;align-items:center;gap:10px;font-size:1.05rem;font-weight:700;}
-.dot{width:12px;height:12px;border-radius:999px;background:var(--muted);box-shadow:0 0 0 4px rgba(255,255,255,.05);}
+.dot{width:12px;height:12px;border-radius:999px;background:var(--muted);}
 .dot.active{background:var(--accent);}
 .dot.self{background:var(--primary);}
 .player-stats{display:flex;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:.92rem;}
-/* Grid: 4 columns (Skyjo is 4 cols x 3 rows = 12 cards) */
 .grid{display:flex;gap:10px;flex-wrap:wrap;}
-.col-group{display:flex;flex-direction:column;gap:10px;position:relative;}
-.col-group.removed{opacity:0;pointer-events:none;transition:opacity .4s;}
-.card{
-  width:clamp(60px,8vw,80px);aspect-ratio:7/10;
-  border-radius:18px;border:1px solid var(--line);
-  position:relative;overflow:hidden;display:grid;place-items:center;
-  background:linear-gradient(160deg,var(--surface-2),var(--surface));
-  color:var(--text);font-weight:700;font-size:clamp(1rem,2vw,1.5rem);
-  user-select:none;
-}
-.card.face-down{
-  background:
-    linear-gradient(150deg,rgba(255,255,255,.08),rgba(255,255,255,0)),
-    repeating-linear-gradient(135deg,rgba(79,152,163,.24) 0 10px,rgba(209,153,0,.18) 10px 20px),
-    var(--surface-2);
-  color:transparent;
-}
-.card.selectable{cursor:pointer;box-shadow:0 0 0 2px rgba(79,152,163,.45);}
-.card.selectable:hover{transform:translateY(-2px);}
+.col-group{display:flex;flex-direction:column;gap:10px;}
+.col-group.matched .card{box-shadow:0 0 0 3px var(--accent);}
+.card{width:clamp(60px,8vw,80px);aspect-ratio:7/10;border-radius:18px;border:1px solid var(--line);position:relative;display:grid;place-items:center;background:linear-gradient(160deg,var(--surface-2),var(--surface));color:var(--text);font-weight:700;font-size:clamp(1rem,2vw,1.5rem);user-select:none;transition:.15s ease;}
+.card.face-down{background:repeating-linear-gradient(135deg,rgba(79,152,163,.24) 0 10px,rgba(209,153,0,.18) 10px 20px),var(--surface-2);color:transparent;}
+.card.selectable{cursor:pointer;box-shadow:0 0 0 2.5px var(--primary);transform:translateY(-2px);}
+.card.selectable:hover{transform:translateY(-4px);}
+.card.gone{opacity:0;pointer-events:none;}
 .card .mini{position:absolute;top:8px;left:10px;font-size:.72rem;color:var(--muted);font-weight:500;}
-.card.negative{color:var(--good);}
-.card.high{color:var(--danger);}
-.card.pending{outline:2px solid var(--accent);outline-offset:2px;}
-.card.back::after{content:"Skyjo";color:rgba(255,255,255,.82);font-family:var(--font-display);font-size:.9rem;letter-spacing:.04em;transform:rotate(-8deg);}
-.col-group.matched .card{
-  box-shadow:0 0 0 3px var(--accent);
-  animation:pulse-match .6s ease 2;
-}
-@keyframes pulse-match{0%,100%{transform:scale(1);}50%{transform:scale(1.06);}}
+.card.neg{color:var(--good);}
+.card.hi{color:var(--danger);}
+.card.pending-card{outline:2px solid var(--accent);outline-offset:2px;}
+.card.back::after{content:"Skyjo";color:rgba(255,255,255,.82);font-family:var(--font-display);font-size:.9rem;transform:rotate(-8deg);}
 .play-area{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;align-items:start;}
-.pile{min-height:170px;padding:16px;border-radius:24px;border:1px solid var(--line);
-  background:var(--surface);display:grid;justify-items:center;gap:12px;text-align:center;}
-.pile p{margin:0;color:var(--muted);font-size:.9rem;}
+.pile{min-height:180px;padding:16px;border-radius:24px;border:1px solid var(--line);background:var(--surface);display:grid;justify-items:center;gap:10px;text-align:center;}
+.pile h3{margin:0;font-size:.95rem;}
+.pile p{margin:0;color:var(--muted);font-size:.88rem;}
 .action-row{display:flex;gap:10px;flex-wrap:wrap;}
-.status{padding:14px 16px;border-radius:18px;background:var(--surface-2);
-  border:1px solid var(--line);color:var(--text);line-height:1.45;}
-.log{max-height:220px;overflow:auto;display:grid;gap:8px;padding-right:6px;}
-.log-item{font-size:.9rem;color:var(--muted);padding-bottom:8px;border-bottom:1px dashed var(--line);}
+.status{padding:14px 16px;border-radius:18px;background:var(--surface-2);border:1px solid var(--line);color:var(--text);line-height:1.5;font-size:.95rem;}
+.log{max-height:200px;overflow:auto;display:grid;gap:6px;}
+.log-item{font-size:.88rem;color:var(--muted);padding-bottom:6px;border-bottom:1px dashed var(--line);}
 .small{font-size:.86rem;color:var(--muted);}
-.center{text-align:center;}
-.divider{height:1px;background:var(--line);margin:8px 0 2px;}
+.divider{height:1px;background:var(--line);margin:8px 0;}
 .copy-wrap{display:flex;gap:8px;}
 .copy-wrap input{flex:1;}
-.footer-note{color:var(--muted);font-size:.88rem;line-height:1.45;}
-.rules-box{background:var(--surface-2);border:1px solid var(--line);border-radius:16px;padding:14px;font-size:.88rem;color:var(--muted);line-height:1.6;}
+.rules-box{background:var(--surface-2);border:1px solid var(--line);border-radius:16px;padding:14px;font-size:.86rem;color:var(--muted);line-height:1.65;}
 .rules-box strong{color:var(--text);}
+/* Mode indicator */
+.mode-flip{background:var(--accent)!important;color:#000!important;}
 @media(max-width:980px){.layout{grid-template-columns:1fr;}.play-area{grid-template-columns:1fr;}}
-@media(max-width:640px){.app{padding:14px;}.grid{gap:6px;}.player-section{padding:14px;}.panel{padding:14px;}.card{border-radius:14px;}.topbar{padding:14px;}}
+@media(max-width:640px){.app{padding:12px;}.card{border-radius:12px;}.topbar,.panel,.player-section{padding:12px;}}
 </style>
 </head>
 <body>
@@ -144,44 +106,32 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none;}
         <p>2-Spieler · Online oder lokal · Vollständige Regeln</p>
       </div>
     </div>
-    <button class="theme-btn" id="themeBtn" aria-label="Theme wechseln">🌙 / ☀️</button>
+    <button class="theme-btn" id="themeBtn">🌙/☀️</button>
   </header>
 
   <div class="layout">
     <aside class="stack">
       <section class="panel">
         <h2>Verbindung</h2>
-        <div class="field">
-          <label for="nameInput">Dein Name</label>
-          <input id="nameInput" maxlength="22" placeholder="z. B. Simeon"/>
-        </div>
+        <div class="field"><label for="nameInput">Dein Name</label><input id="nameInput" maxlength="22" placeholder="z. B. Simeon"/></div>
         <div class="row">
           <button class="primary" id="hostBtn">Raum erstellen</button>
           <button class="ghost" id="joinModeBtn">Beitreten</button>
           <button class="soft" id="localBtn">Lokal</button>
         </div>
         <div class="stack" id="joinBox" style="display:none;">
-          <div class="field">
-            <label for="roomInput">Raumcode</label>
-            <input id="roomInput" placeholder="Code eingeben"/>
-          </div>
+          <div class="field"><label for="roomInput">Raumcode</label><input id="roomInput" placeholder="Code eingeben"/></div>
           <button class="primary" id="connectBtn">Verbinden</button>
         </div>
         <div class="divider"></div>
-        <div class="stack">
-          <div class="small">Status</div>
-          <div class="badge-row">
-            <div class="badge">Peer: <strong id="peerState">offline</strong></div>
-            <div class="badge">Rolle: <strong id="roleState">–</strong></div>
-            <div class="badge">Verbindung: <strong id="connState">–</strong></div>
-          </div>
+        <div class="badge-row">
+          <div class="badge">Peer: <strong id="peerState">offline</strong></div>
+          <div class="badge">Rolle: <strong id="roleState">–</strong></div>
+          <div class="badge">Verb.: <strong id="connState">–</strong></div>
         </div>
-        <div class="field" id="roomArea" style="display:none;margin-top:10px;">
-          <label>Dein Raumcode</label>
-          <div class="copy-wrap">
-            <input id="roomCode" readonly/>
-            <button class="ghost" id="copyBtn">Kopieren</button>
-          </div>
+        <div class="field" id="roomArea" style="display:none;margin-top:8px;">
+          <label>Raumcode teilen</label>
+          <div class="copy-wrap"><input id="roomCode" readonly/><button class="ghost" id="copyBtn">Kopieren</button></div>
         </div>
       </section>
 
@@ -198,13 +148,13 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none;}
       <section class="panel">
         <h2>Regeln</h2>
         <div class="rules-box">
-          <strong>Ziel:</strong> Möglichst wenige Punkte sammeln.<br>
-          <strong>Setup:</strong> Jede Person deckt 2 beliebige Karten auf.<br>
-          <strong>Zug:</strong> Karte vom Stapel oder Ablage nehmen → tauschen oder abwerfen + verdeckte Karte aufdecken.<br>
-          <strong>Spalten-Regel:</strong> Wenn alle 3 Karten einer Spalte aufgedeckt sind und denselben Wert haben → ganze Spalte wird entfernt (0 Punkte).<br>
-          <strong>Rundenende:</strong> Wenn jemand alle Karten aufgedeckt hat. Alle anderen decken noch ihre letzten auf.<br>
-          <strong>Verdopplung:</strong> Wer die Runde beendet aber nicht den niedrigsten Wert hat → Punkte werden verdoppelt.<br>
-          <strong>Spielende:</strong> Wenn jemand ≥ 100 Punkte hat. Wer am wenigsten hat, gewinnt.
+          <strong>Ziel:</strong> Möglichst wenige Punkte.<br>
+          <strong>Setup:</strong> 2 eigene Karten aufdecken.<br>
+          <strong>Zug:</strong> Vom Stapel oder Ablage ziehen → tauschen oder abwerfen + verdeckte aufdecken.<br>
+          <strong>Spalten-Regel ★:</strong> 3 gleiche aufgedeckte Karten in einer Spalte → Spalte fliegt raus!<br>
+          <strong>Rundenende:</strong> Wer alle Karten offen hat → Runde endet.<br>
+          <strong>Verdopplung:</strong> Wer beendet aber nicht den niedrigsten Wert hat → ×2.<br>
+          <strong>Spielende:</strong> Jemand ≥ 100 Punkte → wer am wenigsten hat gewinnt.
         </div>
       </section>
 
@@ -218,10 +168,7 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none;}
       <section class="panel">
         <div class="player-head">
           <div class="player-name">Spielübersicht</div>
-          <div class="player-stats">
-            <span>Runde: <strong id="roundNo">1</strong></span>
-            <span>Ziel: <strong>100 Punkte</strong></span>
-          </div>
+          <div class="player-stats"><span>Runde: <strong id="roundNo">1</strong></span><span>Ziel: <strong>100 Punkte</strong></span></div>
         </div>
         <div class="play-area">
           <div class="pile">
@@ -239,7 +186,7 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none;}
           <div class="pile">
             <h3>Gezogene Karte</h3>
             <div id="pendingPile"></div>
-            <button class="ghost" id="discardPendingBtn" data-mode="swap">Abwerfen + Karte aufdecken</button>
+            <button class="ghost" id="discardPendingBtn">Abwerfen + aufdecken</button>
             <p id="pendingInfo">Noch nichts gezogen</p>
           </div>
         </div>
@@ -247,28 +194,16 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none;}
 
       <section class="player-section">
         <div class="player-head">
-          <div class="player-name">
-            <span class="dot" id="oppDot"></span>
-            <span id="oppName">Gegnerin</span>
-          </div>
-          <div class="player-stats">
-            <span>Runde: <strong id="oppRoundScore">?</strong></span>
-            <span>Gesamt: <strong id="oppTotalScore">0</strong></span>
-          </div>
+          <div class="player-name"><span class="dot" id="oppDot"></span><span id="oppName">Gegnerin</span></div>
+          <div class="player-stats"><span>Runde: <strong id="oppRoundScore">?</strong></span><span>Gesamt: <strong id="oppTotalScore">0</strong></span></div>
         </div>
         <div class="grid" id="oppGrid"></div>
       </section>
 
       <section class="player-section">
         <div class="player-head">
-          <div class="player-name">
-            <span class="dot self" id="selfDot"></span>
-            <span id="selfName">Du</span>
-          </div>
-          <div class="player-stats">
-            <span>Runde: <strong id="selfRoundScore">?</strong></span>
-            <span>Gesamt: <strong id="selfTotalScore">0</strong></span>
-          </div>
+          <div class="player-name"><span class="dot self" id="selfDot"></span><span id="selfName">Du</span></div>
+          <div class="player-stats"><span>Runde: <strong id="selfRoundScore">?</strong></span><span>Gesamt: <strong id="selfTotalScore">0</strong></span></div>
         </div>
         <div class="grid" id="selfGrid"></div>
       </section>
@@ -276,588 +211,447 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none;}
   </div>
 </div>
 
+<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 <script>
-// ─── SKYJO FULL RULES ENGINE ─────────────────────────────────────────────────
-// Card distribution: -2(×5), -1(×10), 0(×15), 1-12(×10 each) = 150 cards total
-// Grid: 4 columns × 3 rows = 12 cards per player
-// Column rule: if all 3 cards in a column are face-up AND same value → remove column
-// End trigger: one player has all cards face-up → finish round (others don't get extra turn in standard, but we follow: ender triggers end, all flip remaining)
-// Doubling: if ender doesn't have lowest score → their score doubles
-// Game over: someone reaches ≥100 total
-
-function makeDeck() {
-  const deck = [];
-  const add = (v, n) => { for(let i=0;i<n;i++) deck.push({v, up:false, id:crypto.randomUUID()}); };
-  add(-2,5); add(-1,10); add(0,15);
-  for(let v=1;v<=12;v++) add(v,10);
-  return shuffle(deck);
+// ── GAME ENGINE ───────────────────────────────────────────────────────────────
+function makeDeck(){
+  const d=[];
+  const a=(v,n)=>{for(let i=0;i<n;i++)d.push({v,up:false,gone:false,id:Math.random().toString(36).slice(2)});};
+  a(-2,5);a(-1,10);a(0,15);
+  for(let v=1;v<=12;v++)a(v,10);
+  return shuffle(d);
 }
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
 
-function shuffle(a) {
-  const b=[...a];
-  for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}
-  return b;
-}
-
-// Grid stored as flat array of 12, columns are: col0=[0,1,2], col1=[3,4,5], col2=[6,7,8], col3=[9,10,11]
-function getColumn(grid, col) {
-  return [grid[col*3], grid[col*3+1], grid[col*3+2]];
-}
-
-function checkAndRemoveColumns(grid) {
-  let removed = [];
-  for(let col=0;col<4;col++){
-    const cards = getColumn(grid, col);
-    if(cards.every(c => c.up && !c.removed) && cards[0].v===cards[1].v && cards[1].v===cards[2].v) {
-      removed.push(col);
-      cards.forEach(c => c.removed = true);
+// col c = indices [c*3, c*3+1, c*3+2]
+function colCards(g,c){return[g[c*3],g[c*3+1],g[c*3+2]];}
+function checkCols(g){
+  let hit=false;
+  for(let c=0;c<4;c++){
+    const cc=colCards(g,c);
+    if(cc.every(x=>x.up&&!x.gone)&&cc[0].v===cc[1].v&&cc[1].v===cc[2].v){
+      cc.forEach(x=>x.gone=true);hit=true;
     }
   }
-  return removed;
+  return hit;
 }
+function activeScore(g){return g.filter(x=>!x.gone).reduce((s,x)=>s+x.v,0);}
+function allUp(g){const a=g.filter(x=>!x.gone);return a.length>0&&a.every(x=>x.up);}
 
-function activeCards(grid) {
-  return grid.filter(c => !c.removed);
-}
-
-function allActiveUp(grid) {
-  const active = activeCards(grid);
-  return active.length > 0 && active.every(c => c.up);
-}
-
-function gridScore(grid) {
-  return activeCards(grid).reduce((s,c) => s + c.v, 0);
-}
-
-function newRound(prevTotals) {
-  const deck = makeDeck();
-  const players = [0,1].map(i => ({
-    id: i,
-    name: i===0 ? 'Host' : 'Gast',
-    grid: Array.from({length:12}, () => ({...deck.pop(), removed:false})),
-    total: prevTotals?.[i] ?? 0
+function newRound(prevTotals){
+  const deck=makeDeck();
+  const players=[0,1].map(i=>({
+    id:i,name:i===0?'Host':'Gast',
+    grid:Array.from({length:12},()=>({...deck.pop(),gone:false})),
+    total:prevTotals?.[i]??0
   }));
-  const discard = [{...deck.pop(), up:true}];
-  return {
-    players, deck, discard,
-    cur: 0,
-    phase: 'setup',   // setup → turn → round-over → game-over
-    pending: null,
-    pendingSrc: null,
-    setupFlips: [0,0],
-    endedBy: null,
-    round: 1,
-    log: ['Neue Runde! Jede Person deckt 2 Karten auf.']
-  };
+  return{players,deck,discard:[{...deck.pop(),up:true}],cur:0,phase:'setup',
+    pending:null,pendingSrc:null,setupFlips:[0,0],round:1,log:['Neue Runde! Decke 2 Karten auf.']};
 }
+function addLog(s,t){s.log=[t,...s.log].slice(0,50);}
+function clone(o){return JSON.parse(JSON.stringify(o));}
 
-function clone(o){ return JSON.parse(JSON.stringify(o)); }
-
-function addLog(state, txt) {
-  state.log = [txt, ...state.log].slice(0,50);
-}
-
-// After any card flip, check columns for removal
-function processColumnRemoval(state, playerIdx) {
-  const p = state.players[playerIdx];
-  const removed = checkAndRemoveColumns(p.grid);
-  if(removed.length > 0) {
-    removed.forEach(col => {
-      addLog(state, `💥 ${p.name}: Spalte ${col+1} entfernt! (alle ${p.grid[col*3].v})`);
-    });
+function finishRound(s){
+  s.phase='round-over';
+  // flip all remaining
+  s.players.forEach(p=>p.grid.forEach(c=>{if(!c.gone)c.up=true;}));
+  // final column check for both
+  s.players.forEach(p=>checkCols(p.grid));
+  const sc=s.players.map(p=>activeScore(p.grid));
+  const ender=s.cur;
+  let doubled=false;
+  if(sc[ender]>=sc[1-ender]){sc[ender]*=2;doubled=true;}
+  s.players.forEach((p,i)=>p.total+=sc[i]);
+  addLog(s,`🏁 ${s.players[ender].name} beendete Runde.${doubled?' VERDOPPLUNG!':''}`);
+  addLog(s,`📊 ${s.players[0].name}: +${sc[0]} | ${s.players[1].name}: +${sc[1]}`);
+  addLog(s,`🔢 Gesamt: ${s.players[0].name} ${s.players[0].total} | ${s.players[1].name} ${s.players[1].total}`);
+  if(s.players.some(p=>p.total>=100)){
+    s.phase='game-over';
+    const w=[...s.players].sort((a,b)=>a.total-b.total)[0];
+    addLog(s,`🏆 ${w.name} gewinnt mit ${w.total} Punkten!`);
   }
-  return removed;
 }
 
-// Check if round should end: active player has all active cards face-up
-function checkRoundEnd(state) {
-  const p = state.players[state.cur];
-  if(!allActiveUp(p.grid)) return false;
+// ── APP ───────────────────────────────────────────────────────────────────────
+const $=s=>document.querySelector(s);
+// flipMode: when true, next card click = discard-flip (not swap)
+let flipMode=false;
 
-  state.phase = 'round-over';
-  state.endedBy = state.cur;
+const app={peer:null,conn:null,role:null,localMode:false,playerIndex:0,lastView:null,hostName:'Host',guestName:'Gast',state:null};
 
-  // Flip all remaining hidden cards for both players
-  state.players.forEach(pl => pl.grid.forEach(c => { if(!c.removed) c.up = true; }));
-
-  // Also do final column removal pass for both players
-  state.players.forEach((pl, i) => processColumnRemoval(state, i));
-
-  // Calculate scores
-  const scores = state.players.map(pl => gridScore(pl.grid));
-  const ender = state.cur;
-  const other = 1 - ender;
-
-  // Doubling rule: ender must have strictly lower score than opponent
-  let doubled = false;
-  if(scores[ender] >= scores[other]) {
-    scores[ender] *= 2;
-    doubled = true;
-  }
-
-  state.players.forEach((pl,i) => pl.total += scores[i]);
-
-  addLog(state, `🏁 Runde vorbei! ${state.players[ender].name} beendete.${doubled ? ' (Verdopplung!)' : ''}`);
-  addLog(state, `📊 ${state.players[0].name}: ${scores[0]} | ${state.players[1].name}: ${scores[1]}`);
-  addLog(state, `🔢 Gesamt: ${state.players[0].name} ${state.players[0].total} | ${state.players[1].name} ${state.players[1].total}`);
-
-  if(state.players.some(p => p.total >= 100)) {
-    state.phase = 'game-over';
-    const winner = [...state.players].sort((a,b) => a.total - b.total)[0];
-    addLog(state, `🏆 Spiel beendet! ${winner.name} gewinnt mit ${winner.total} Punkten!`);
-  }
-  return true;
+function syncNames(){
+  if(!app.state)return;
+  app.state.players[0].name=app.hostName;
+  app.state.players[1].name=app.guestName;
 }
+function randomId(n=6){const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let o='';for(let i=0;i<n;i++)o+=c[Math.floor(Math.random()*c.length)];return o;}
 
-// ─── APP STATE ────────────────────────────────────────────────────────────────
-const $ = s => document.querySelector(s);
-const app = {
-  peer:null, conn:null, role:null, localMode:false,
-  playerIndex:0, lastView:null,
-  hostName:'Host', guestName:'Gast', state:null
-};
-
-function randomId(n=6){
-  const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let o='';for(let i=0;i<n;i++)o+=c[Math.floor(Math.random()*c.length)];return o;
-}
-
-function viewFor(state, idx) {
-  if(!state) return null;
-  const s = clone(state);
-  s.viewer = idx;
-  s.players.forEach((p,i) => {
-    const active = activeCards(p.grid);
-    const allUp = active.length>0 && active.every(c=>c.up);
-    p.roundScore = allUp || ['round-over','game-over'].includes(s.phase)
-      ? gridScore(p.grid) : '?';
-    if(i !== idx && !['round-over','game-over'].includes(s.phase)) {
-      p.grid = p.grid.map(c => c.up || c.removed ? c : {...c, v:null, up:false});
+function viewFor(state,idx){
+  if(!state)return null;
+  const s=clone(state);
+  s.viewer=idx;
+  s.players.forEach((p,i)=>{
+    const act=p.grid.filter(x=>!x.gone);
+    p.roundScore=(act.every(x=>x.up)||['round-over','game-over'].includes(s.phase))?activeScore(p.grid):'?';
+    if(i!==idx&&!['round-over','game-over'].includes(s.phase)){
+      p.grid=p.grid.map(c=>c.up||c.gone?c:{...c,v:null});
     }
   });
-  if(s.pending && s.cur !== idx && s.pendingSrc==='deck' && !['round-over','game-over'].includes(s.phase)) {
-    s.pending = {...s.pending, v:null, up:false};
+  if(s.pending&&s.cur!==idx&&s.pendingSrc==='deck'&&!['round-over','game-over'].includes(s.phase)){
+    s.pending={...s.pending,v:null,up:false};
   }
   return s;
 }
 
-function syncNames() {
-  if(!app.state) return;
-  app.state.players[0].name = app.hostName;
-  app.state.players[1].name = app.guestName;
+function pushState(){
+  if(app.localMode){app.lastView=viewFor(app.state,0);render();return;}
+  if(app.role==='host'){
+    app.lastView=viewFor(app.state,0);render();
+    if(app.conn?.open)app.conn.send({t:'state',view:viewFor(app.state,1)});
+  }
 }
 
-// ─── HOST ACTION HANDLER ──────────────────────────────────────────────────────
-function hostAction(action, from) {
-  if(action.t==='start' && app.role==='host') {
-    const totals = app.state?.players?.map(p=>p.total);
-    app.state = newRound(totals);
-    app.state.round = app.state.round || 1;
-    syncNames();
-    pushState(); return;
+function doAction(action,from){
+  // Global commands
+  if(action.t==='start'&&app.role==='host'){
+    const totals=app.state?.players?.map(p=>p.total);
+    const r=(app.state?.round||0)+1;
+    app.state=newRound(totals);
+    app.state.round=r;
+    syncNames();pushState();return;
   }
-  if(action.t==='new-round' && app.role==='host') {
-    if(!['round-over','game-over'].includes(app.state?.phase)) return;
-    const totals = app.state.phase==='game-over' ? [0,0] : app.state.players.map(p=>p.total);
-    const prevRound = app.state.round || 1;
-    app.state = newRound(totals);
-    app.state.round = app.state.phase==='game-over' ? 1 : prevRound+1;
-    syncNames();
-    pushState(); return;
+  if(action.t==='new-round'&&app.role==='host'){
+    if(!['round-over','game-over'].includes(app.state?.phase))return;
+    const totals=app.state.phase==='game-over'?[0,0]:app.state.players.map(p=>p.total);
+    const r=app.state.phase==='game-over'?1:(app.state.round||1)+1;
+    app.state=newRound(totals);app.state.round=r;
+    syncNames();pushState();return;
   }
-  if(action.t==='reset' && app.role==='host') {
-    app.state=null; pushState(); return;
+  if(action.t==='reset'&&app.role==='host'){app.state=null;pushState();return;}
+  if(action.t==='set-name'){
+    if(from===0)app.hostName=action.name||'Host';
+    if(from===1)app.guestName=action.name||'Gast';
+    syncNames();pushState();return;
   }
-  if(action.t==='set-name') {
-    if(from===0) app.hostName=action.name||'Host';
-    if(from===1) app.guestName=action.name||'Gast';
-    syncNames(); pushState(); return;
-  }
+  if(!app.state||!['setup','turn'].includes(app.state.phase))return;
+  const me=app.state.players[from];
 
-  if(!app.state || !['setup','turn'].includes(app.state.phase)) return;
-  const me = app.state.players[from];
-
-  // ── SETUP PHASE ──
-  if(app.state.phase==='setup') {
-    if(action.t!=='setup-flip') return;
-    const c = me.grid[action.i];
-    if(!c||c.up||c.removed) return;
-    c.up = true;
-    app.state.setupFlips[from]++;
-    processColumnRemoval(app.state, from);
-    addLog(app.state, `${me.name} deckt Startkarte auf (${app.state.setupFlips[from]}/2)`);
-    if(app.state.setupFlips.every(n=>n>=2)) {
-      app.state.phase='turn'; app.state.cur=0;
-      addLog(app.state, `✅ Alle bereit! ${app.state.players[0].name} beginnt.`);
+  // Setup phase
+  if(app.state.phase==='setup'){
+    if(action.t!=='setup-flip')return;
+    const c=me.grid[action.i];
+    if(!c||c.up||c.gone)return;
+    c.up=true;app.state.setupFlips[from]++;
+    if(checkCols(me.grid))addLog(app.state,`💥 ${me.name}: Spalte entfernt!`);
+    addLog(app.state,`${me.name} deckt Karte auf (${app.state.setupFlips[from]}/2)`);
+    if(app.state.setupFlips.every(n=>n>=2)){
+      app.state.phase='turn';app.state.cur=0;
+      addLog(app.state,`✅ Los! ${app.state.players[0].name} beginnt.`);
     }
-    pushState(); return;
+    pushState();return;
   }
 
-  // ── TURN PHASE ──
-  if(app.state.cur !== from) return;
+  // Turn phase — only current player
+  if(app.state.cur!==from)return;
 
-  if(action.t==='draw-deck') {
-    if(app.state.pending) return;
-    if(app.state.deck.length===0) {
+  if(action.t==='draw-deck'){
+    if(app.state.pending)return;
+    if(app.state.deck.length===0){
       const top=app.state.discard.pop();
-      app.state.deck=shuffle(app.state.discard.map(c=>({...c,up:false,id:crypto.randomUUID()})));
+      app.state.deck=shuffle(app.state.discard.map(c=>({...c,up:false,id:Math.random().toString(36).slice(2)})));
       app.state.discard=[top];
-      addLog(app.state,'🔄 Ablagestapel neu gemischt.');
+      addLog(app.state,'🔄 Stapel neu gemischt.');
     }
     app.state.pending={...app.state.deck.pop(),up:true};
     app.state.pendingSrc='deck';
-    addLog(app.state,`${me.name} zieht ${app.state.pending.v} vom Stapel`);
-    pushState(); return;
+    addLog(app.state,`${me.name} zieht: ${app.state.pending.v}`);
+    pushState();return;
   }
 
-  if(action.t==='draw-discard') {
-    if(app.state.pending||!app.state.discard.length) return;
+  if(action.t==='draw-discard'){
+    if(app.state.pending||!app.state.discard.length)return;
     app.state.pending={...app.state.discard.pop(),up:true};
     app.state.pendingSrc='discard';
-    addLog(app.state,`${me.name} nimmt Ablage (${app.state.pending.v})`);
-    pushState(); return;
+    addLog(app.state,`${me.name} nimmt Ablage: ${app.state.pending.v}`);
+    pushState();return;
   }
 
-  if(action.t==='swap') {
-    if(!app.state.pending) return;
+  if(action.t==='swap'){
+    if(!app.state.pending)return;
     const t=me.grid[action.i];
-    if(!t||t.removed) return;
+    if(!t||t.gone)return;
     const old={...t,up:true};
-    me.grid[action.i]={...app.state.pending,up:true,removed:false};
+    me.grid[action.i]={...app.state.pending,up:true,gone:false};
     app.state.discard.push(old);
-    app.state.pending=null; app.state.pendingSrc=null;
+    app.state.pending=null;app.state.pendingSrc=null;
     addLog(app.state,`${me.name} tauscht → ${me.grid[action.i].v}`);
-    processColumnRemoval(app.state, from);
-    if(!checkRoundEnd(app.state)) app.state.cur=1-app.state.cur;
-    pushState(); return;
+    if(checkCols(me.grid))addLog(app.state,`💥 ${me.name}: Spalte entfernt!`);
+    if(allUp(me.grid))finishRound(app.state);else app.state.cur=1-app.state.cur;
+    pushState();return;
   }
 
-  if(action.t==='discard-flip') {
-    if(!app.state.pending) return;
+  if(action.t==='discard-flip'){
+    if(!app.state.pending)return;
     const t=me.grid[action.i];
-    if(!t||t.up||t.removed) return;
+    if(!t||t.up||t.gone)return;
     app.state.discard.push({...app.state.pending,up:true});
     t.up=true;
-    app.state.pending=null; app.state.pendingSrc=null;
+    app.state.pending=null;app.state.pendingSrc=null;
     addLog(app.state,`${me.name} wirft ab, deckt ${t.v} auf`);
-    processColumnRemoval(app.state, from);
-    if(!checkRoundEnd(app.state)) app.state.cur=1-app.state.cur;
-    pushState(); return;
+    if(checkCols(me.grid))addLog(app.state,`💥 ${me.name}: Spalte entfernt!`);
+    if(allUp(me.grid))finishRound(app.state);else app.state.cur=1-app.state.cur;
+    pushState();return;
   }
 }
 
-// ─── NETWORK ──────────────────────────────────────────────────────────────────
-function pushState() {
-  if(app.localMode) {
-    app.lastView=viewFor(app.state,0); render(); return;
+function sendAction(action){
+  if(['swap','discard-flip','setup-flip'].includes(action.t)){
+    flipMode=false; // always reset after card action
   }
-  if(app.role==='host') {
-    app.lastView=viewFor(app.state,0); render();
-    sendToGuest({t:'state',view:viewFor(app.state,1)});
-  }
+  if(app.localMode){doAction(action,0);return;}
+  if(app.role==='host')doAction(action,0);
+  else if(app.conn?.open)app.conn.send({t:'action',action});
 }
 
-function sendToGuest(data) {
-  if(app.conn?.open) app.conn.send(data);
+// ── NETWORK ───────────────────────────────────────────────────────────────────
+function cleanupNetwork(){
+  try{app.conn?.close();}catch{}try{app.peer?.destroy();}catch{}
+  app.conn=null;app.peer=null;app.state=null;app.lastView=null;flipMode=false;
+  ui.roomArea.style.display='none';ui.roomCode.value='';
+  ui.peerState.textContent='offline';ui.connState.textContent='–';ui.roleState.textContent='–';
 }
-
-function sendAction(action) {
-  if(app.localMode){ hostAction(action,0); return; }
-  if(app.role==='host') hostAction(action,0);
-  else if(app.conn?.open) app.conn.send({t:'action',action});
-}
-
-function bindNetwork() {
-  app.peer.on('open', id => {
+function bindNetwork(){
+  app.peer.on('open',id=>{
     ui.peerState.textContent='bereit';
     if(app.role==='host'){ui.roomArea.style.display='grid';ui.roomCode.value=id;}
   });
-  app.peer.on('connection', conn => {
-    if(app.role!=='host') return;
-    app.conn=conn; ui.connState.textContent='verbunden';
+  app.peer.on('connection',conn=>{
+    if(app.role!=='host')return;
+    app.conn=conn;ui.connState.textContent='verbunden';
     conn.on('open',()=>{conn.send({t:'hello',playerIdx:1});pushState();});
     conn.on('data',msg=>{
-      if(msg.t==='action') hostAction(msg.action,1);
-      if(msg.t==='set-name') hostAction({t:'set-name',name:msg.name},1);
+      if(msg.t==='action')doAction(msg.action,1);
+      if(msg.t==='set-name')doAction({t:'set-name',name:msg.name},1);
     });
     conn.on('close',()=>{ui.connState.textContent='getrennt';app.conn=null;});
   });
 }
 
-function cleanupNetwork() {
-  try{app.conn?.close();}catch{}
-  try{app.peer?.destroy();}catch{}
-  app.conn=null;app.peer=null;app.state=null;app.lastView=null;
-  ui.roomArea.style.display='none';ui.roomCode.value='';
-  ui.peerState.textContent='offline';ui.connState.textContent='–';ui.roleState.textContent='–';
-}
-
-// ─── UI ELEMENTS ──────────────────────────────────────────────────────────────
+// ── UI ────────────────────────────────────────────────────────────────────────
 const ui={
-  nameInput:$('#nameInput'),hostBtn:$('#hostBtn'),joinModeBtn:$('#joinModeBtn'),
-  localBtn:$('#localBtn'),joinBox:$('#joinBox'),roomInput:$('#roomInput'),
-  connectBtn:$('#connectBtn'),roomArea:$('#roomArea'),roomCode:$('#roomCode'),
-  copyBtn:$('#copyBtn'),peerState:$('#peerState'),roleState:$('#roleState'),
-  connState:$('#connState'),startBtn:$('#startBtn'),newRoundBtn:$('#newRoundBtn'),
-  resetBtn:$('#resetBtn'),drawDeckBtn:$('#drawDeckBtn'),drawDiscardBtn:$('#drawDiscardBtn'),
-  discardPendingBtn:$('#discardPendingBtn'),deckPile:$('#deckPile'),
-  discardPile:$('#discardPile'),pendingPile:$('#pendingPile'),
+  nameInput:$('#nameInput'),hostBtn:$('#hostBtn'),joinModeBtn:$('#joinModeBtn'),localBtn:$('#localBtn'),
+  joinBox:$('#joinBox'),roomInput:$('#roomInput'),connectBtn:$('#connectBtn'),
+  roomArea:$('#roomArea'),roomCode:$('#roomCode'),copyBtn:$('#copyBtn'),
+  peerState:$('#peerState'),roleState:$('#roleState'),connState:$('#connState'),
+  startBtn:$('#startBtn'),newRoundBtn:$('#newRoundBtn'),resetBtn:$('#resetBtn'),
+  drawDeckBtn:$('#drawDeckBtn'),drawDiscardBtn:$('#drawDiscardBtn'),discardPendingBtn:$('#discardPendingBtn'),
+  deckPile:$('#deckPile'),discardPile:$('#discardPile'),pendingPile:$('#pendingPile'),
   deckCount:$('#deckCount'),discardInfo:$('#discardInfo'),pendingInfo:$('#pendingInfo'),
-  statusBox:$('#statusBox'),logBox:$('#logBox'),oppGrid:$('#oppGrid'),
-  selfGrid:$('#selfGrid'),oppName:$('#oppName'),selfName:$('#selfName'),
-  oppDot:$('#oppDot'),selfDot:$('#selfDot'),oppRoundScore:$('#oppRoundScore'),
-  selfRoundScore:$('#selfRoundScore'),oppTotalScore:$('#oppTotalScore'),
-  selfTotalScore:$('#selfTotalScore'),roundNo:$('#roundNo'),themeBtn:$('#themeBtn')
+  statusBox:$('#statusBox'),logBox:$('#logBox'),
+  oppGrid:$('#oppGrid'),selfGrid:$('#selfGrid'),oppName:$('#oppName'),selfName:$('#selfName'),
+  oppDot:$('#oppDot'),selfDot:$('#selfDot'),oppRoundScore:$('#oppRoundScore'),selfRoundScore:$('#selfRoundScore'),
+  oppTotalScore:$('#oppTotalScore'),selfTotalScore:$('#selfTotalScore'),roundNo:$('#roundNo'),themeBtn:$('#themeBtn')
 };
 
-// ─── RENDER ───────────────────────────────────────────────────────────────────
-function cardEl(card,opts={}) {
+function mkCard(card,opts={}){
   const el=document.createElement('button');
-  el.className='card';
-  if(!card.up) el.classList.add('face-down');
-  if(opts.back) el.classList.add('back');
-  if(opts.pending) el.classList.add('pending');
-  if(opts.selectable) el.classList.add('selectable');
-  if(card.up && typeof card.v==='number' && card.v<0) el.classList.add('negative');
-  if(card.up && typeof card.v==='number' && card.v>=8) el.classList.add('high');
+  el.className='card'+(card.up?'':(card.gone?'':' face-down'));
+  if(card.gone)el.classList.add('gone');
+  if(opts.selectable)el.classList.add('selectable');
+  if(opts.pendingCard)el.classList.add('pending-card');
+  if(opts.back)el.classList.add('back');
+  if(card.up&&!card.gone){
+    if(card.v<0)el.classList.add('neg');
+    if(card.v>=8)el.classList.add('hi');
+  }
   el.type='button';
-  el.innerHTML=card.up?`<span class="mini">${opts.label||''}</span>${card.v}`:'';
+  el.innerHTML=card.up&&!card.gone?`<span class="mini">${opts.label||''}</span>${card.v}`:'';
   return el;
 }
 
-function renderGrid(el, player, isSelf, view) {
+function renderGrid(el,player,isSelf,view){
   el.innerHTML='';
-  const canAct = view && view.phase==='turn' && view.cur===view.viewer;
-  const inSetup = view && view.phase==='setup';
-  const discardMode = isSelf && ui.discardPendingBtn.dataset.mode==='flip';
+  const inSetup=view&&view.phase==='setup';
+  const myTurn=view&&view.phase==='turn'&&view.cur===view.viewer;
 
-  // Render in 4 column groups
   for(let col=0;col<4;col++){
-    const colDiv=document.createElement('div');
-    colDiv.className='col-group';
-    const cards=[player.grid[col*3],player.grid[col*3+1],player.grid[col*3+2]];
+    const cg=document.createElement('div');cg.className='col-group';
+    const cc=[player.grid[col*3],player.grid[col*3+1],player.grid[col*3+2]];
+    // highlight matched column
+    if(cc.every(x=>x.up&&!x.gone)&&!cc.every(x=>x.gone)&&cc[0].v===cc[1].v&&cc[1].v===cc[2].v)
+      cg.classList.add('matched');
 
-    // Check if column is removed (all removed flag)
-    const allRemoved=cards.every(c=>c.removed);
-    if(allRemoved){colDiv.classList.add('removed');}
-
-    // Check if column is matched (all same value, all up, not removed — about to be removed)
-    const allUp=cards.every(c=>c.up&&!c.removed);
-    const allSame=allUp&&cards[0].v===cards[1].v&&cards[1].v===cards[2].v;
-    if(allSame&&!allRemoved) colDiv.classList.add('matched');
-
-    cards.forEach((card,row) => {
-      if(card.removed){
-        const spacer=document.createElement('div');
-        spacer.className='card face-down';
-        spacer.style.opacity='0';spacer.style.pointerEvents='none';
-        colDiv.appendChild(spacer); return;
-      }
+    cc.forEach((card,row)=>{
+      const idx=col*3+row;
       let selectable=false;
-      if(isSelf&&inSetup&&!card.up&&view.setupFlips[view.viewer]<2) selectable=true;
-      if(isSelf&&canAct&&view.pending&&!discardMode) selectable=true;
-      if(isSelf&&canAct&&view.pending&&discardMode&&!card.up) selectable=true;
-
-      const node=cardEl(card,{selectable});
-      const cardIdx=col*3+row;
+      if(isSelf&&inSetup&&!card.up&&!card.gone&&view.setupFlips[view.viewer]<2)selectable=true;
+      if(isSelf&&myTurn&&view.pending){
+        if(flipMode&&!card.up&&!card.gone)selectable=true;   // discard-flip mode: only face-down
+        if(!flipMode&&!card.gone)selectable=true;             // swap mode: any active card
+      }
+      const node=mkCard(card,{selectable});
       node.addEventListener('click',()=>{
-        if(!isSelf) return;
-        if(inSetup&&view.setupFlips[view.viewer]<2&&!card.up){
-          sendAction({t:'setup-flip',i:cardIdx}); return;
+        if(!isSelf)return;
+        if(inSetup&&!card.up&&!card.gone&&view.setupFlips[view.viewer]<2){
+          sendAction({t:'setup-flip',i:idx});render();return;
         }
-        if(!canAct||!view.pending) return;
-        if(discardMode){
-          if(!card.up) sendAction({t:'discard-flip',i:cardIdx});
+        if(!myTurn||!view.pending)return;
+        if(flipMode){
+          if(!card.up&&!card.gone){sendAction({t:'discard-flip',i:idx});render();}
         } else {
-          sendAction({t:'swap',i:cardIdx});
+          if(!card.gone){sendAction({t:'swap',i:idx});render();}
         }
       });
-      colDiv.appendChild(node);
+      cg.appendChild(node);
     });
-    el.appendChild(colDiv);
+    el.appendChild(cg);
   }
 }
 
-function renderPile(el,type,view) {
+function renderPile(el,type,view){
   el.innerHTML='';
-  if(type==='deck'){el.appendChild(cardEl({up:false},{back:true}));return;}
+  if(type==='deck'){el.appendChild(mkCard({up:false},{back:true}));return;}
   if(type==='discard'){
     const top=view?.discard?.[view.discard.length-1];
-    el.appendChild(top?cardEl(top,{label:'Ablage'}):cardEl({up:false},{back:true}));return;
+    el.appendChild(top?mkCard(top,{label:'Ablage'}):mkCard({up:false},{back:true}));return;
   }
-  if(type==='pending'){
-    if(!view?.pending){
-      const ph=document.createElement('div');ph.className='card face-down';ph.style.opacity='.4';el.appendChild(ph);return;
-    }
-    el.appendChild(cardEl(view.pending,{pending:true}));
-  }
+  if(!view?.pending){const ph=document.createElement('div');ph.className='card face-down';ph.style.opacity='.3';el.appendChild(ph);return;}
+  el.appendChild(mkCard(view.pending,{pendingCard:true}));
 }
 
-function render() {
-  const view=app.lastView;
+function render(){
+  const v=app.lastView;
   ui.roleState.textContent=app.localMode?'lokal':(app.role||'–');
-  ui.connState.textContent=app.localMode?'lokal aktiv':(app.conn?.open?'verbunden':'–');
+  ui.connState.textContent=app.localMode?'lokal':(app.conn?.open?'verbunden':'–');
 
-  if(!view){
+  if(!v){
     [ui.oppGrid,ui.selfGrid,ui.deckPile,ui.discardPile,ui.pendingPile].forEach(e=>e.innerHTML='');
-    ui.deckCount.textContent='0 Karten';ui.discardInfo.textContent='–';
-    ui.pendingInfo.textContent='Noch nichts gezogen';
-    ui.oppRoundScore.textContent='?';ui.selfRoundScore.textContent='?';
-    ui.oppTotalScore.textContent='0';ui.selfTotalScore.textContent='0';
+    ui.selfName.textContent='Du';ui.oppName.textContent='Gegnerin';
+    ui.deckCount.textContent='–';ui.discardInfo.textContent='–';ui.pendingInfo.textContent='–';
+    ui.selfRoundScore.textContent='?';ui.oppRoundScore.textContent='?';
+    ui.selfTotalScore.textContent='0';ui.oppTotalScore.textContent='0';
     ui.roundNo.textContent='1';ui.logBox.innerHTML='';
+    ui.statusBox.textContent='Erstelle einen Raum oder verbinde dich.';
     return;
   }
 
-  const self=view.players[view.viewer];
-  const opp=view.players[1-view.viewer];
-  ui.selfName.textContent=self.name;
-  ui.oppName.textContent=opp.name;
-  ui.selfRoundScore.textContent=self.roundScore;
-  ui.oppRoundScore.textContent=opp.roundScore;
-  ui.selfTotalScore.textContent=self.total;
-  ui.oppTotalScore.textContent=opp.total;
-  ui.roundNo.textContent=view.round||1;
-  ui.deckCount.textContent=`${view.deck.length} Karten`;
-  const discardTop=view.discard?.[view.discard.length-1];
-  ui.discardInfo.textContent=discardTop?`Oben: ${discardTop.v}`:'Leer';
-  ui.pendingInfo.textContent=view.pending
-    ?(view.pending.up?`Gezogen: ${view.pending.v}`:'Verdeckt gezogen')
-    :'Noch nichts gezogen';
+  const self=v.players[v.viewer],opp=v.players[1-v.viewer];
+  ui.selfName.textContent=self.name;ui.oppName.textContent=opp.name;
+  ui.selfRoundScore.textContent=self.roundScore;ui.oppRoundScore.textContent=opp.roundScore;
+  ui.selfTotalScore.textContent=self.total;ui.oppTotalScore.textContent=opp.total;
+  ui.roundNo.textContent=v.round||1;
+  ui.deckCount.textContent=`${v.deck.length} Karten`;
+  const discTop=v.discard?.[v.discard.length-1];
+  ui.discardInfo.textContent=discTop?`Oben: ${discTop.v}`:'Leer';
+  ui.pendingInfo.textContent=v.pending?(v.pending.up?`Gezogen: ${v.pending.v}`:'Verdeckt gezogen'):'Noch nichts';
+  ui.oppDot.classList.toggle('active',v.cur===(1-v.viewer));
+  ui.selfDot.classList.toggle('active',v.cur===v.viewer);
 
-  ui.oppDot.classList.toggle('active',view.cur===(1-view.viewer));
-  ui.selfDot.classList.toggle('active',view.cur===view.viewer);
-
-  renderPile(ui.deckPile,'deck',view);
-  renderPile(ui.discardPile,'discard',view);
-  renderPile(ui.pendingPile,'pending',view);
-  renderGrid(ui.oppGrid,opp,false,view);
-  renderGrid(ui.selfGrid,self,true,view);
+  renderPile(ui.deckPile,'deck',v);
+  renderPile(ui.discardPile,'discard',v);
+  renderPile(ui.pendingPile,'pending',v);
+  renderGrid(ui.oppGrid,opp,false,v);
+  renderGrid(ui.selfGrid,self,true,v);
 
   // Log
   ui.logBox.innerHTML='';
-  (view.log||[]).forEach(line=>{
-    const d=document.createElement('div');d.className='log-item';d.textContent=line;ui.logBox.appendChild(d);
-  });
+  (v.log||[]).forEach(line=>{const d=document.createElement('div');d.className='log-item';d.textContent=line;ui.logBox.appendChild(d);});
 
-  // Status text
+  // Discard button state
+  const myTurn=v.phase==='turn'&&v.cur===v.viewer;
+  if(flipMode){
+    ui.discardPendingBtn.textContent='↩ Abbrechen';
+    ui.discardPendingBtn.classList.add('mode-flip');
+  } else {
+    ui.discardPendingBtn.textContent='Abwerfen + aufdecken';
+    ui.discardPendingBtn.classList.remove('mode-flip');
+  }
+
+  // Status
   let txt='';
-  const canAct=view.phase==='turn'&&view.cur===view.viewer;
-  const discardMode=ui.discardPendingBtn.dataset.mode==='flip';
-  if(view.phase==='setup'){
-    const left=2-view.setupFlips[view.viewer];
-    txt=left>0?`Decke noch ${left} Startkarte(n) auf.`:`Warte auf die andere Person…`;
-  } else if(view.phase==='turn'){
-    if(view.cur!==view.viewer) txt=`${opp.name} ist am Zug…`;
-    else if(!view.pending) txt=`Du bist dran: Karte vom Stapel oder Ablage nehmen.`;
-    else if(discardMode) txt=`Wähle eine verdeckte Karte in deinem Feld zum Aufdecken.`;
-    else txt=`Tausche eine Karte in deinem Feld — oder wirf die gezogene ab und decke eine auf.`;
-  } else if(view.phase==='round-over') txt=`Runde beendet! Klicke "Neue Runde" für die nächste.`;
-  else if(view.phase==='game-over'){
-    const w=[...view.players].sort((a,b)=>a.total-b.total)[0];
+  if(v.phase==='setup'){
+    const left=2-v.setupFlips[v.viewer];
+    txt=left>0?`Decke noch ${left} Startkarte(n) auf.`:'Warte auf die andere Person…';
+  }else if(v.phase==='turn'){
+    if(v.cur!==v.viewer)txt=`${opp.name} ist am Zug…`;
+    else if(!v.pending)txt='Du bist dran: Karte vom Stapel oder Ablage nehmen.';
+    else if(flipMode)txt='Wähle eine verdeckte Karte in deinem Feld (oder Abbrechen).';
+    else txt='Wähle eine Karte zum Tauschen — oder "Abwerfen + aufdecken".';
+  }else if(v.phase==='round-over')txt='Runde beendet! Klicke "Neue Runde".';
+  else if(v.phase==='game-over'){
+    const w=[...v.players].sort((a,b)=>a.total-b.total)[0];
     txt=`🏆 Spiel vorbei! ${w.name} gewinnt mit ${w.total} Punkten!`;
   }
   ui.statusBox.textContent=txt;
 
-  const myTurn=view.phase==='turn'&&view.cur===view.viewer;
-  ui.drawDeckBtn.disabled=!myTurn||!!view.pending;
-  ui.drawDiscardBtn.disabled=!myTurn||!!view.pending||!view.discard?.length;
-  ui.discardPendingBtn.disabled=!myTurn||!view.pending;
+  // Button states
+  ui.drawDeckBtn.disabled=!myTurn||!!v.pending;
+  ui.drawDiscardBtn.disabled=!myTurn||!!v.pending||!v.discard?.length;
+  ui.discardPendingBtn.disabled=!myTurn||!v.pending;
   ui.startBtn.disabled=!(app.localMode||app.role==='host');
-  ui.newRoundBtn.disabled=!(app.localMode||app.role==='host')||!['round-over','game-over'].includes(view.phase);
+  ui.newRoundBtn.disabled=!(app.localMode||app.role==='host')||!['round-over','game-over'].includes(v.phase);
 }
 
-// ─── CONTROLS ─────────────────────────────────────────────────────────────────
+// ── EVENT LISTENERS ───────────────────────────────────────────────────────────
+ui.drawDeckBtn.addEventListener('click',()=>sendAction({t:'draw-deck'}));
+ui.drawDiscardBtn.addEventListener('click',()=>sendAction({t:'draw-discard'}));
+
 ui.discardPendingBtn.addEventListener('click',()=>{
-  if(!app.lastView?.pending) return;
-  // Toggle to flip mode — user must now click a face-down card
-  ui.discardPendingBtn.dataset.mode='flip';
-  ui.discardPendingBtn.textContent='← Karte auswählen (verdeckte anklicken)';
+  if(!app.lastView?.pending)return;
+  flipMode=!flipMode; // toggle: on = select face-down card, off = cancel
   render();
 });
 
-// Reset discard mode after any action
-function resetDiscardMode(){
-  ui.discardPendingBtn.dataset.mode='swap';
-  ui.discardPendingBtn.textContent='Abwerfen + Karte aufdecken';
-}
+ui.startBtn.addEventListener('click',()=>{flipMode=false;sendAction({t:'start'});});
+ui.newRoundBtn.addEventListener('click',()=>{flipMode=false;sendAction({t:'new-round'});});
+ui.resetBtn.addEventListener('click',()=>{flipMode=false;sendAction({t:'reset'});});
 
-// Wrap sendAction to reset mode
-const _origSend=sendAction;
-window.sendActionWrapped=function(action){
-  _origSend(action);
-  if(['swap','discard-flip','setup-flip'].includes(action.t)) resetDiscardMode();
-};
-
-// Replace direct sendAction calls in grid with wrapped version
-// (already handled in renderGrid via sendAction which calls hostAction which calls pushState)
-
-ui.drawDeckBtn.addEventListener('click',()=>sendAction({t:'draw-deck'}));
-ui.drawDiscardBtn.addEventListener('click',()=>sendAction({t:'draw-discard'}));
-ui.startBtn.addEventListener('click',()=>sendAction({t:'start'}));
-ui.newRoundBtn.addEventListener('click',()=>{resetDiscardMode();sendAction({t:'new-round'});});
-ui.resetBtn.addEventListener('click',()=>{resetDiscardMode();sendAction({t:'reset'});});
-
-ui.joinModeBtn.addEventListener('click',()=>{
-  ui.joinBox.style.display=ui.joinBox.style.display==='none'?'grid':'none';
-});
-
-function initHost(){
-  cleanupNetwork(); app.localMode=false; app.role='host'; app.playerIndex=0;
+ui.joinModeBtn.addEventListener('click',()=>{ui.joinBox.style.display=ui.joinBox.style.display==='none'?'grid':'none';});
+ui.hostBtn.addEventListener('click',()=>{
+  cleanupNetwork();app.localMode=false;app.role='host';app.playerIndex=0;
   app.hostName=ui.nameInput.value.trim()||'Host';
-  app.peer=new Peer(randomId(6));
-  bindNetwork(); ui.peerState.textContent='starte…'; render();
-}
-function initJoin(){
-  cleanupNetwork(); app.localMode=false; app.role='guest'; app.playerIndex=1;
+  app.peer=new Peer(randomId(6));bindNetwork();
+  ui.peerState.textContent='starte…';ui.roleState.textContent='host';render();
+});
+ui.connectBtn.addEventListener('click',()=>{
+  cleanupNetwork();app.localMode=false;app.role='guest';app.playerIndex=1;
   app.guestName=ui.nameInput.value.trim()||'Gast';
   app.peer=new Peer(randomId(6));
   app.peer.on('open',()=>{
-    ui.peerState.textContent='bereit';
+    ui.peerState.textContent='bereit';ui.roleState.textContent='gast';
     const conn=app.peer.connect(ui.roomInput.value.trim());
     app.conn=conn;
     conn.on('open',()=>{ui.connState.textContent='verbunden';conn.send({t:'set-name',name:app.guestName});});
     conn.on('data',msg=>{
-      if(msg.t==='hello') app.playerIndex=msg.playerIdx;
+      if(msg.t==='hello')app.playerIndex=msg.playerIdx;
       if(msg.t==='state'){app.lastView=msg.view;render();}
     });
     conn.on('close',()=>ui.connState.textContent='getrennt');
   });
   render();
-}
-function initLocal(){
-  cleanupNetwork(); app.localMode=true; app.role='host'; app.playerIndex=0;
-  app.hostName=ui.nameInput.value.trim()||'Du';
-  app.guestName='Freundin';
-  app.state=newRound([0,0]); syncNames();
-  app.lastView=viewFor(app.state,0);
-  ui.peerState.textContent='lokal'; render();
-}
-
-ui.hostBtn.addEventListener('click',initHost);
-ui.connectBtn.addEventListener('click',initJoin);
-ui.localBtn.addEventListener('click',initLocal);
-
-ui.copyBtn.addEventListener('click',async()=>{
-  try{await navigator.clipboard.writeText(ui.roomCode.value);
-    ui.copyBtn.textContent='Kopiert!';setTimeout(()=>ui.copyBtn.textContent='Kopieren',1200);
-  }catch{ui.copyBtn.textContent='Fehler';}
 });
-
+ui.localBtn.addEventListener('click',()=>{
+  cleanupNetwork();app.localMode=true;app.role='host';app.playerIndex=0;
+  app.hostName=ui.nameInput.value.trim()||'Du';app.guestName='Freundin';
+  app.state=newRound([0,0]);syncNames();
+  app.lastView=viewFor(app.state,0);
+  ui.peerState.textContent='lokal';ui.roleState.textContent='lokal';render();
+});
+ui.copyBtn.addEventListener('click',async()=>{
+  try{await navigator.clipboard.writeText(ui.roomCode.value);ui.copyBtn.textContent='Kopiert!';setTimeout(()=>ui.copyBtn.textContent='Kopieren',1500);}catch{}
+});
 ui.nameInput.addEventListener('change',()=>{
   const n=ui.nameInput.value.trim()||'Spieler';
   if(app.localMode){app.hostName=n;if(app.state){syncNames();app.lastView=viewFor(app.state,0);render();}return;}
-  if(!app.role) return;
-  if(app.role==='host'){app.hostName=n;if(app.state) hostAction({t:'set-name',name:n},0);}
+  if(!app.role)return;
+  if(app.role==='host'){app.hostName=n;if(app.state)doAction({t:'set-name',name:n},0);}
   else if(app.conn?.open){app.guestName=n;app.conn.send({t:'set-name',name:n});}
 });
-
 ui.themeBtn.addEventListener('click',()=>{
-  const r=document.documentElement;
-  r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark');
+  const r=document.documentElement;r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark');
 });
 
 render();
 </script>
-<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 </body>
 </html>
