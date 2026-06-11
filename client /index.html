@@ -247,7 +247,7 @@ button:disabled{opacity:.35;pointer-events:none}
 // ═══════════════════════════════════════
 // KONFIGURATION — HIER ANPASSEN!
 // ═══════════════════════════════════════
-const SECRETS = ['GEHEIM_SIMI', 'GEHEIM_LOL'];
+const SECRETS = ['2211', '2408'];
 // Spieler 0 = Simi (Host), Spieler 1 = Lol (Gast)
 // Passworte müssen identisch mit denen im server/index.js sein
 
@@ -302,7 +302,7 @@ $('#btnHost').addEventListener('click',()=>startAs(0));
 $('#btnGuest').addEventListener('click',()=>startAs(1));
 
 function startAs(idx){
-  const name=$('#overlayName').value.trim()||(idx===0?'Simi':'Lol');
+  const name=$('#overlayName').value.trim()||(idx===0?'Simi':'Doro');
   const url=$('#serverUrlInput').value.trim();
   if(!url){alert('Bitte Server-URL eingeben!');return;}
   G.myIdx=idx;G.myName=name;G.serverUrl=url;
