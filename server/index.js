@@ -54,7 +54,7 @@ wss.on('connection', (ws, req) => {
   const secret = url.searchParams.get('secret');
 
   // Einfacher Secret-Check
-  const secrets = ['GEHEIM_SIMI', 'GEHEIM_LOL']; // ← ihr ändert diese!
+  const secrets = ['2211', '2408']; // ← ihr ändert diese!
   if (secret !== secrets[playerIdx]) {
     ws.send(JSON.stringify({ t: 'error', msg: 'Falsches Passwort!' }));
     ws.close();
