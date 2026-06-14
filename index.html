@@ -1209,20 +1209,17 @@ ui.connectBtn.addEventListener('click', initJoin);
     const callText = document.getElementById('voiceCallText');
     if (!s3) return;
     if (state === 'host-waiting') {
-      s3.style.opacity = '1';
-      s4.style.opacity = '1';
+      s3.style.opacity = '1'; s4.style.opacity = '1';
       if(s4t) s4t.textContent = 'Gast muss jetzt ebenfalls auf 🎙️ Sprachchat klicken';
       if(callStatus) callStatus.style.display = 'block';
       if(callText) callText.textContent = '⏳ Bereit — warte auf Anruf vom Gast…';
     } else if (state === 'guest-calling') {
-      s3.style.opacity = '1';
-      s4.style.opacity = '1';
+      s3.style.opacity = '1'; s4.style.opacity = '1';
       if(s4t) s4t.textContent = '📞 Verbindet sich mit Host…';
       if(callStatus) callStatus.style.display = 'block';
       if(callText) callText.textContent = '📞 Anruf läuft — warte auf Host…';
     } else if (state === 'connected') {
-      s3.style.opacity = '1';
-      s4.style.opacity = '1';
+      s3.style.opacity = '1'; s4.style.opacity = '1';
       if(s4t) s4t.textContent = '✅ Sprachchat aktiv!';
       if(callStatus) callStatus.style.display = 'block';
       if(callText) callText.textContent = '🔊 Verbunden! Nutze 🔇 zum Stummschalten.';
@@ -1236,20 +1233,32 @@ ui.connectBtn.addEventListener('click', initJoin);
       return localStream;
     } catch(e) {
       setVoiceStatus('idle', '❌ Kein Mikrofon-Zugriff');
-      alert('Mikrofon-Zugriff wurde verweigert. Bitte im Browser erlauben.');
+      alert('Mikrofon-Zugriff verweigert. Bitte im Browser erlauben.');
       return null;
     }
   }
 
-  function attachRemoteAudio(stream) {
+  function playRemoteStream(stream) {
     let audio = document.getElementById('remoteAudio');
     if (!audio) {
       audio = document.createElement('audio');
       audio.id = 'remoteAudio';
       audio.autoplay = true;
+      // Important: muted=false, no loop, plays immediately
+      audio.muted = false;
       document.body.appendChild(audio);
     }
     audio.srcObject = stream;
+    // Force play — some browsers block autoplay
+    audio.play().catch(() => {
+      // If autoplay blocked, show a button to resume
+      const btn = document.createElement('button');
+      btn.className = 'btn primary';
+      btn.style = 'position:fixed;bottom:70px;right:20px;z-index:999;';
+      btn.textContent = '▶️ Audio starten';
+      btn.onclick = () => { audio.play(); btn.remove(); };
+      document.body.appendChild(btn);
+    });
     setVoiceStatus('active', 'Verbunden 🔊');
     updateVoiceGuide('connected');
     addMuteBtn();
@@ -1260,45 +1269,58 @@ ui.connectBtn.addEventListener('click', initJoin);
     const btn = document.createElement('button');
     btn.id = 'muteBtn';
     btn.className = 'btn ghost';
-    btn.title = 'Mikrofon stummschalten';
-    btn.textContent = '🔊 Mikro an';
     btn.style.fontSize = '.85rem';
+    btn.textContent = '🔊 Mikro an';
     btn.addEventListener('click', () => {
-      if (!localStream) return;
       isMuted = !isMuted;
-      localStream.getAudioTracks().forEach(t => t.enabled = !isMuted);
+      if (localStream) localStream.getAudioTracks().forEach(t => t.enabled = !isMuted);
       btn.textContent = isMuted ? '🔇 Stumm' : '🔊 Mikro an';
       setVoiceStatus(isMuted ? 'muted' : 'active', isMuted ? 'Stummgeschaltet 🔇' : 'Verbunden 🔊');
     });
     voiceBtn.parentElement.insertBefore(btn, voiceStatus.nextSibling);
   }
 
+  // HOST: get mic FIRST, then listen for incoming calls
   async function startVoiceHost() {
     if (!app.peer) { alert('Zuerst einen Raum erstellen!'); return; }
+    // Get mic BEFORE registering call handler — stream must exist when answering
     const stream = await getMic();
     if (!stream) return;
     setVoiceStatus('idle', '⏳ Warte auf Gast…');
     updateVoiceGuide('host-waiting');
+    // Remove previous call handlers to avoid duplicates
+    app.peer.off('call');
     app.peer.on('call', call => {
       activeCall = call;
+      // Answer immediately with our local stream — this is what the guest hears
       call.answer(stream);
-      call.on('stream', remoteStream => attachRemoteAudio(remoteStream));
-      call.on('close', () => { setVoiceStatus('idle', '📵 Getrennt'); });
+      call.on('stream', remoteStream => {
+        // This is the guest's audio — play it on host
+        playRemoteStream(remoteStream);
+      });
+      call.on('close', () => setVoiceStatus('idle', '📵 Getrennt'));
+      call.on('error', e => console.error('Call error:', e));
     });
   }
 
+  // GUEST: get mic, then call host — both sides send their stream
   async function startVoiceGuest() {
-    if (!app.conn || !app.conn.open) { alert('Erst mit einem Raum verbinden, dann Sprachchat starten!'); return; }
+    if (!app.conn || !app.conn.open) { alert('Erst mit einem Raum verbinden!'); return; }
     const stream = await getMic();
     if (!stream) return;
     const hostId = app.conn.peer;
     setVoiceStatus('idle', '📞 Rufe an…');
     updateVoiceGuide('guest-calling');
+    // Call host with our local stream — host will answer with their stream
     const call = app.peer.call(hostId, stream);
     if (!call) { setVoiceStatus('idle', '❌ Anruf fehlgeschlagen'); return; }
     activeCall = call;
-    call.on('stream', remoteStream => attachRemoteAudio(remoteStream));
-    call.on('close', () => { setVoiceStatus('idle', '📵 Getrennt'); });
+    call.on('stream', remoteStream => {
+      // This is the host's audio — play it on guest
+      playRemoteStream(remoteStream);
+    });
+    call.on('close', () => setVoiceStatus('idle', '📵 Getrennt'));
+    call.on('error', e => console.error('Call error:', e));
   }
 
   voiceBtn.addEventListener('click', async () => {
@@ -1315,7 +1337,7 @@ ui.connectBtn.addEventListener('click', initJoin);
   render = function() {
     _origRender();
     const s3 = document.getElementById('vStep3');
-    if (s3 && (app.conn?.open)) s3.style.opacity = '1';
+    if (s3 && app.conn?.open) s3.style.opacity = '1';
   };
 })();
 
