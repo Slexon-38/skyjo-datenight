@@ -168,9 +168,63 @@ button:disabled{opacity:.42;cursor:not-allowed;transform:none;}
   .app{padding:12px;}.grid{gap:7px;}.panel,.player-section{padding:12px;}.topbar{padding:12px;}
   .card{border-radius:13px;font-size:.9rem;}
 }
+
+.chat-log{
+  max-height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;
+  padding-right:4px;margin-bottom:10px;
+}
+.chat-msg{
+  padding:8px 12px;border-radius:14px;font-size:.9rem;line-height:1.4;
+  max-width:90%;word-break:break-word;
+}
+.chat-msg.me{
+  background:var(--primary);color:#fff;align-self:flex-end;border-bottom-right-radius:4px;
+}
+.chat-msg.them{
+  background:var(--s2);border:1px solid var(--line);align-self:flex-start;border-bottom-left-radius:4px;
+}
+.chat-msg .chat-who{font-size:.75rem;opacity:.7;margin-bottom:2px;font-weight:600;}
+.chat-msg .chat-time{font-size:.72rem;opacity:.55;margin-top:2px;}
+.chat-input-row{display:flex;gap:8px;}
+.chat-input-row input{
+  flex:1;min-height:44px;border-radius:14px;border:1px solid var(--line);
+  background:var(--s2);color:var(--text);padding:0 12px;outline:none;transition:.15s;
+}
+.chat-input-row input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(79,152,163,.18);}
+.chat-unread{
+  position:fixed;bottom:24px;right:24px;z-index:50;
+  background:var(--danger);color:#fff;border-radius:999px;
+  padding:10px 18px;font-size:.9rem;font-weight:600;box-shadow:var(--sh);
+  cursor:pointer;display:none;animation:popIn .2s ease;
+}
+@keyframes popIn{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+
+.voice-status{
+  display:flex;align-items:center;gap:8px;font-size:.88rem;color:var(--muted);
+  padding:6px 12px;border-radius:999px;background:var(--s2);border:1px solid var(--line);
+  min-width:120px;justify-content:center;
+}
+.voice-status.active{
+  background:color-mix(in srgb,var(--good) 15%,var(--s2));
+  border-color:var(--good);color:var(--good);
+}
+.voice-status.muted-st{
+  background:color-mix(in srgb,var(--danger) 15%,var(--s2));
+  border-color:var(--danger);color:var(--danger);
+}
+.voice-dot{
+  width:9px;height:9px;border-radius:999px;background:currentColor;
+  animation:pulse-dot 1.2s ease-in-out infinite;
+}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.voice-controls{
+  display:flex;gap:8px;align-items:center;
+}
+#muteBtn{font-size:1.1rem;}
 </style>
 </head>
 <body>
+<div class="chat-unread" id="chatUnread">💬 Neue Nachricht</div>
 <div class="app">
 <header class="topbar">
   <div class="brand">
@@ -188,6 +242,8 @@ button:disabled{opacity:.42;cursor:not-allowed;transform:none;}
   <div class="row">
     <button class="btn ghost" id="rulesBtn">📖 Regeln</button>
     <button class="btn ghost" id="themeBtn" aria-label="Theme wechseln">🌙</button>
+    <button class="btn ghost" id="voiceBtn" title="Sprachchat">🎙️ Verbinden</button>
+    <div class="voice-status" id="voiceStatus"></div>
   </div>
 </header>
 
@@ -245,6 +301,18 @@ button:disabled{opacity:.42;cursor:not-allowed;transform:none;}
       <label for="nameInput">Dein Name</label>
       <input id="nameInput" maxlength="22" placeholder="z. B. Simeon"/>
     </div>
+
+    <div class="divider"></div>
+    <div class="small" style="color:var(--muted);margin-bottom:4px;">🔒 TURN-Server (optional, für stabiles Internet)</div>
+    <div class="field">
+      <label for="turnUser">Metered Username</label>
+      <input id="turnUser" placeholder="Von dashboard.metered.ca"/>
+    </div>
+    <div class="field">
+      <label for="turnPass">Metered Credential</label>
+      <input id="turnPass" type="password" placeholder="Von dashboard.metered.ca"/>
+    </div>
+    <div class="divider"></div>
     <div class="row">
       <button class="btn primary" id="hostBtn">Raum erstellen</button>
       <button class="btn ghost" id="joinModeBtn">Beitreten</button>
@@ -350,6 +418,15 @@ button:disabled{opacity:.42;cursor:not-allowed;transform:none;}
     </div>
     <div class="grid" id="selfGrid"></div>
   </section>
+
+  <section class="panel" style="margin-top:0;">
+    <h2>💬 Chat</h2>
+    <div class="chat-log" id="chatLog"></div>
+    <div class="chat-input-row">
+      <input id="chatInput" placeholder="Nachricht…" maxlength="200" autocomplete="off"/>
+      <button class="btn primary" id="chatSendBtn">Senden</button>
+    </div>
+  </section>
 </main>
 </div>
 </div>
@@ -377,6 +454,25 @@ const ui={
 
 const app={peer:null,conn:null,role:null,localMode:false,playerIndex:0,
   lastView:null,hostName:'Host',guestName:'Gast',state:null,flipMode:false};
+
+
+function buildICE() {
+  const u = $('#turnUser').value.trim();
+  const p = $('#turnPass').value.trim();
+  const servers = [
+    { urls: "stun:stun.relay.metered.ca:80" },
+    { urls: "stun:stun.l.google.com:19302" }
+  ];
+  if (u && p) {
+    servers.push(
+      { urls: "turn:standard.relay.metered.ca:80",          username: u, credential: p },
+      { urls: "turn:standard.relay.metered.ca:80?transport=tcp", username: u, credential: p },
+      { urls: "turn:standard.relay.metered.ca:443?transport=tcp", username: u, credential: p },
+      { urls: "turns:standard.relay.metered.ca:443",        username: u, credential: p }
+    );
+  }
+  return { iceServers: servers };
+}
 
 function rId(n=6){const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let o='';for(let i=0;i<n;i++)o+=c[Math.floor(Math.random()*c.length)];return o;}
 
@@ -937,6 +1033,130 @@ ui.closeRules.addEventListener('click',()=>ui.rulesModal.style.display='none');
 ui.rulesModal.addEventListener('click',e=>{if(e.target===ui.rulesModal)ui.rulesModal.style.display='none';});
 
 render();
+
+// ── CHAT ──────────────────────────────────────────────────────────────────
+const chatLog = $('#chatLog');
+const chatInput = $('#chatInput');
+const chatSendBtn = $('#chatSendBtn');
+const chatUnread = $('#chatUnread');
+let chatUnreadCount = 0;
+let chatVisible = () => {
+  const r = chatLog.getBoundingClientRect();
+  return r.top < window.innerHeight && r.bottom > 0;
+};
+
+function chatTimestamp() {
+  const d = new Date();
+  return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
+}
+
+function appendChatMsg(who, text, isMe) {
+  const div = document.createElement('div');
+  div.className = 'chat-msg ' + (isMe ? 'me' : 'them');
+  div.innerHTML = `<div class="chat-who">${who}</div><div>${text}</div><div class="chat-time">${chatTimestamp()}</div>`;
+  chatLog.appendChild(div);
+  chatLog.scrollTop = chatLog.scrollHeight;
+  if (!isMe && !chatVisible()) {
+    chatUnreadCount++;
+    chatUnread.style.display = 'block';
+    chatUnread.textContent = `💬 ${chatUnreadCount} neue Nachricht${chatUnreadCount > 1 ? 'en' : ''}`;
+  }
+}
+
+function sendChat(text) {
+  if (!text.trim()) return;
+  const myName = ui.nameInput.value.trim() || (app.role === 'host' ? app.hostName : app.guestName) || 'Du';
+  appendChatMsg(myName, text, true);
+  const msg = { type: 'chat', name: myName, text };
+  if (app.localMode) return; // local: no recipient
+  if (app.role === 'host') sendToGuest(msg);
+  else if (app.conn?.open) app.conn.send(msg);
+}
+
+chatSendBtn.addEventListener('click', () => {
+  sendChat(chatInput.value);
+  chatInput.value = '';
+});
+chatInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendChat(chatInput.value);
+    chatInput.value = '';
+  }
+});
+chatUnread.addEventListener('click', () => {
+  chatLog.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  chatUnreadCount = 0;
+  chatUnread.style.display = 'none';
+});
+
+// Hook into existing data handlers — patch after peer connections are made
+// We monkey-patch the conn.on('data') calls by wrapping the sendToGuest dispatch
+const _origSendToGuest = sendToGuest;
+
+// Override host incoming data handler by patching the bindNetwork function
+const _origBindNetwork = bindNetwork;
+function bindNetworkWithChat() {
+  app.peer.on('open', id => {
+    ui.peerState.textContent = 'bereit';
+    if (app.role === 'host') { ui.roomArea.style.display = 'grid'; ui.roomCode.value = id; }
+  });
+  app.peer.on('connection', conn => {
+    if (app.role !== 'host') return;
+    app.conn = conn; ui.connState.textContent = 'verbunden';
+    conn.on('open', () => {
+      conn.send({ type: 'hello', playerIndex: 1 });
+      pushState();
+    });
+    conn.on('data', msg => {
+      if (msg.type === 'action') hostAction(msg.action, 1);
+      if (msg.type === 'set-name') hostAction({ type: 'set-name', name: msg.name }, 1);
+      if (msg.type === 'chat') appendChatMsg(msg.name, msg.text, false);
+    });
+    conn.on('close', () => { ui.connState.textContent = 'getrennt'; app.conn = null; });
+  });
+}
+
+// Patch initHost & initJoin to use new bindNetwork
+const _origInitHost = initHost;
+function initHost() {
+  cleanup();
+  app.localMode = false; app.role = 'host'; app.playerIndex = 0;
+  app.hostName = ui.nameInput.value.trim() || 'Host';
+  app.peer = new Peer(rId(6), { config: buildICE() });
+  bindNetworkWithChat();
+  ui.peerState.textContent = 'starte…'; render();
+}
+
+const _origInitJoin = initJoin;
+function initJoin() {
+  cleanup();
+  app.localMode = false; app.role = 'guest'; app.playerIndex = 1;
+  app.guestName = ui.nameInput.value.trim() || 'Gast';
+  app.peer = new Peer(rId(6), { config: buildICE() });
+  app.peer.on('open', () => {
+    ui.peerState.textContent = 'bereit';
+    const code = ui.roomInput.value.trim();
+    if (!code) return;
+    const conn = app.peer.connect(code);
+    app.conn = conn;
+    conn.on('open', () => { ui.connState.textContent = 'verbunden'; conn.send({ type: 'set-name', name: app.guestName }); });
+    conn.on('data', msg => {
+      if (msg.type === 'hello') app.playerIndex = msg.playerIndex;
+      if (msg.type === 'state') { app.lastView = msg.view; app.flipMode = false; render(); }
+      if (msg.type === 'chat') appendChatMsg(msg.name, msg.text, false);
+    });
+    conn.on('close', () => ui.connState.textContent = 'getrennt');
+  });
+  render();
+}
+
+// Re-bind buttons to overridden functions
+ui.hostBtn.removeEventListener('click', initHost);
+ui.connectBtn.removeEventListener('click', initJoin);
+ui.hostBtn.addEventListener('click', initHost);
+ui.connectBtn.addEventListener('click', initJoin);
+
 </script>
 </body>
 </html>
