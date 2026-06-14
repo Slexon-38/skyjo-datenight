@@ -242,8 +242,8 @@ button:disabled{opacity:.42;cursor:not-allowed;transform:none;}
   <div class="row">
     <button class="btn ghost" id="rulesBtn">📖 Regeln</button>
     <button class="btn ghost" id="themeBtn" aria-label="Theme wechseln">🌙</button>
-    <button class="btn ghost" id="voiceBtn" title="Sprachchat">🎙️ Verbinden</button>
-    <div class="voice-status" id="voiceStatus"></div>
+    <button class="btn ghost" id="voiceBtn" title="Sprachchat starten">🎙️ Sprachchat</button>
+    <div class="voice-status" id="voiceStatus">Nicht verbunden</div>
   </div>
 </header>
 
@@ -333,6 +333,35 @@ button:disabled{opacity:.42;cursor:not-allowed;transform:none;}
       <div class="copy-wrap">
         <input id="roomCode" readonly/>
         <button class="btn ghost" id="copyBtn">Kopieren</button>
+      </div>
+    </div>
+
+    <div id="voiceGuide" style="margin-top:10px;">
+      <div class="divider"></div>
+      <div class="small" style="color:var(--muted);margin-bottom:8px;">🎙️ Sprachchat-Anleitung</div>
+      <ol id="voiceSteps" style="margin:0;padding-left:18px;display:grid;gap:6px;font-size:.88rem;color:var(--muted);line-height:1.5;">
+        <li>TURN-Credentials eintragen (optional)</li>
+        <li id="vStep2">Raum erstellen <strong style="color:var(--text)">oder</strong> beitreten</li>
+        <li id="vStep3" style="opacity:.4;">Auf <strong>🎙️ Sprachchat</strong> klicken → Mikrofon erlauben</li>
+        <li id="vStep4" style="opacity:.4;"><span id="vStep4text">Gast: danach ebenfalls auf 🎙️ klicken</span></li>
+      </ol>
+      <div id="voiceCallStatus" style="display:none;margin-top:10px;" class="flip-mode-hint">
+        <span id="voiceCallText">–</span>
+      </div>
+    </div>
+
+
+    <div id="voiceGuide" style="margin-top:10px;">
+      <div class="divider"></div>
+      <div class="small" style="color:var(--muted);margin-bottom:8px;font-weight:600;">🎙️ Sprachchat starten</div>
+      <ol style="margin:0;padding-left:18px;display:grid;gap:5px;font-size:.88rem;color:var(--muted);line-height:1.5;">
+        <li>TURN-Credentials eintragen (optional)</li>
+        <li>Raum erstellen <strong style="color:var(--text)">oder</strong> beitreten</li>
+        <li id="vStep3" style="opacity:.4;">Auf <strong style="color:var(--text)">🎙️ Sprachchat</strong> (oben rechts) klicken → Mikrofon erlauben</li>
+        <li id="vStep4" style="opacity:.4;"><span id="vStep4text">Gast klickt danach ebenfalls auf 🎙️ Sprachchat</span></li>
+      </ol>
+      <div id="voiceCallStatus" style="display:none;margin-top:10px;" class="flip-mode-hint">
+        <span id="voiceCallText">–</span>
       </div>
     </div>
   </section>
@@ -828,6 +857,7 @@ function render(){
   const view=app.lastView;
   ui.roleState.textContent=app.localMode?'lokal':(app.role||'–');
   ui.connState.textContent=app.localMode?'lokal':(app.conn?.open?'verbunden':'–');
+  if (app.conn?.open || app.localMode) { const s3=$('#vStep3'); if(s3)s3.style.opacity='1'; }
 
   if(!view){
     [ui.oppGrid,ui.selfGrid,ui.deckPile,ui.discardPile,ui.pendingPile].forEach(e=>e.innerHTML='');
@@ -1156,6 +1186,138 @@ ui.hostBtn.removeEventListener('click', initHost);
 ui.connectBtn.removeEventListener('click', initJoin);
 ui.hostBtn.addEventListener('click', initHost);
 ui.connectBtn.addEventListener('click', initJoin);
+
+// ── VOICE CHAT ────────────────────────────────────────────────────────────
+(function() {
+  const voiceBtn = document.getElementById('voiceBtn');
+  const voiceStatus = document.getElementById('voiceStatus');
+  let localStream = null;
+  let activeCall = null;
+  let isMuted = false;
+
+  function setVoiceStatus(state, label) {
+    voiceStatus.className = 'voice-status' + (state === 'active' ? ' active' : state === 'muted' ? ' muted-st' : '');
+    const dot = (state === 'active' || state === 'muted') ? '<span class="voice-dot"></span>' : '';
+    voiceStatus.innerHTML = dot + ' ' + (label || '');
+  }
+
+  function updateVoiceGuide(state) {
+    const s3 = document.getElementById('vStep3');
+    const s4 = document.getElementById('vStep4');
+    const s4t = document.getElementById('vStep4text');
+    const callStatus = document.getElementById('voiceCallStatus');
+    const callText = document.getElementById('voiceCallText');
+    if (!s3) return;
+    if (state === 'host-waiting') {
+      s3.style.opacity = '1';
+      s4.style.opacity = '1';
+      if(s4t) s4t.textContent = 'Gast muss jetzt ebenfalls auf 🎙️ Sprachchat klicken';
+      if(callStatus) callStatus.style.display = 'block';
+      if(callText) callText.textContent = '⏳ Bereit — warte auf Anruf vom Gast…';
+    } else if (state === 'guest-calling') {
+      s3.style.opacity = '1';
+      s4.style.opacity = '1';
+      if(s4t) s4t.textContent = '📞 Verbindet sich mit Host…';
+      if(callStatus) callStatus.style.display = 'block';
+      if(callText) callText.textContent = '📞 Anruf läuft — warte auf Host…';
+    } else if (state === 'connected') {
+      s3.style.opacity = '1';
+      s4.style.opacity = '1';
+      if(s4t) s4t.textContent = '✅ Sprachchat aktiv!';
+      if(callStatus) callStatus.style.display = 'block';
+      if(callText) callText.textContent = '🔊 Verbunden! Nutze 🔇 zum Stummschalten.';
+    }
+  }
+
+  async function getMic() {
+    if (localStream) return localStream;
+    try {
+      localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+      return localStream;
+    } catch(e) {
+      setVoiceStatus('idle', '❌ Kein Mikrofon-Zugriff');
+      alert('Mikrofon-Zugriff wurde verweigert. Bitte im Browser erlauben.');
+      return null;
+    }
+  }
+
+  function attachRemoteAudio(stream) {
+    let audio = document.getElementById('remoteAudio');
+    if (!audio) {
+      audio = document.createElement('audio');
+      audio.id = 'remoteAudio';
+      audio.autoplay = true;
+      document.body.appendChild(audio);
+    }
+    audio.srcObject = stream;
+    setVoiceStatus('active', 'Verbunden 🔊');
+    updateVoiceGuide('connected');
+    addMuteBtn();
+  }
+
+  function addMuteBtn() {
+    if (document.getElementById('muteBtn')) return;
+    const btn = document.createElement('button');
+    btn.id = 'muteBtn';
+    btn.className = 'btn ghost';
+    btn.title = 'Mikrofon stummschalten';
+    btn.textContent = '🔊 Mikro an';
+    btn.style.fontSize = '.85rem';
+    btn.addEventListener('click', () => {
+      if (!localStream) return;
+      isMuted = !isMuted;
+      localStream.getAudioTracks().forEach(t => t.enabled = !isMuted);
+      btn.textContent = isMuted ? '🔇 Stumm' : '🔊 Mikro an';
+      setVoiceStatus(isMuted ? 'muted' : 'active', isMuted ? 'Stummgeschaltet 🔇' : 'Verbunden 🔊');
+    });
+    voiceBtn.parentElement.insertBefore(btn, voiceStatus.nextSibling);
+  }
+
+  async function startVoiceHost() {
+    if (!app.peer) { alert('Zuerst einen Raum erstellen!'); return; }
+    const stream = await getMic();
+    if (!stream) return;
+    setVoiceStatus('idle', '⏳ Warte auf Gast…');
+    updateVoiceGuide('host-waiting');
+    app.peer.on('call', call => {
+      activeCall = call;
+      call.answer(stream);
+      call.on('stream', remoteStream => attachRemoteAudio(remoteStream));
+      call.on('close', () => { setVoiceStatus('idle', '📵 Getrennt'); });
+    });
+  }
+
+  async function startVoiceGuest() {
+    if (!app.conn || !app.conn.open) { alert('Erst mit einem Raum verbinden, dann Sprachchat starten!'); return; }
+    const stream = await getMic();
+    if (!stream) return;
+    const hostId = app.conn.peer;
+    setVoiceStatus('idle', '📞 Rufe an…');
+    updateVoiceGuide('guest-calling');
+    const call = app.peer.call(hostId, stream);
+    if (!call) { setVoiceStatus('idle', '❌ Anruf fehlgeschlagen'); return; }
+    activeCall = call;
+    call.on('stream', remoteStream => attachRemoteAudio(remoteStream));
+    call.on('close', () => { setVoiceStatus('idle', '📵 Getrennt'); });
+  }
+
+  voiceBtn.addEventListener('click', async () => {
+    if (app.localMode) { alert('Sprachchat ist nur im Online-Modus verfügbar.'); return; }
+    if (!app.role) { alert('Zuerst einen Raum erstellen oder beitreten!'); return; }
+    voiceBtn.disabled = true;
+    voiceBtn.textContent = '🎙️ Aktiv';
+    if (app.role === 'host') await startVoiceHost();
+    else await startVoiceGuest();
+  });
+
+  // Activate guide step 3 when peer connects
+  const _origRender = render;
+  render = function() {
+    _origRender();
+    const s3 = document.getElementById('vStep3');
+    if (s3 && (app.conn?.open)) s3.style.opacity = '1';
+  };
+})();
 
 </script>
 </body>
